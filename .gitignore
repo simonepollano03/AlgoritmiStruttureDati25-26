@@ -1,0 +1,30 @@
+# File compilati
+*.o
+*.out
+*.exe
+*.so
+*.a
+
+# Cartelle generate dal Makefile
+bin/
+obj/
+
+# Dataset (NON committare!)
+data/
+*.bin
+*.bin.gz
+iliade.txt
+italian_dist_graph.csv
+records.bin*
+
+# File temporanei
+*~
+*.swp
+*.swo
+.DS_Store
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
