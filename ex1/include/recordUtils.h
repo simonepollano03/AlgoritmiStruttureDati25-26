@@ -117,4 +117,12 @@
      */
     int compare_by_field3(const void *a, const void *b);
 
+    /**
+     * @brief Restituisce la funzione di comparazione appropriata per il campo specificato
+     * 
+     * @param field Numero del campo (1=id, 2=field1, 3=field2, 4=field3)
+     * @return Puntatore alla funzione di comparazione, NULL se field non valido
+     */
+    int (*get_comparator(size_t field))(const void *, const void *);
+
 #endif
