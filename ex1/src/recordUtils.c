@@ -128,10 +128,12 @@ int compare_records_by_field3(const void *a, const void *b) {
     const Record *r1 = (const Record *)a;
     const Record *r2 = (const Record *)b;
 
-    if (r1->field3 < r2->field3) return -1;
-    if (r1->field3 > r2->field3) return  1;
+    int result = strcmp(r1->field3, r2->field3);
 
-    return 0;
+    // DEBUG
+    printf("  compare('%s', '%s') = %d\n", r1->field3, r2->field3, result);
+    
+    return result;
 }
 
 int (*get_comparator(size_t field))(const void *, const void *) {

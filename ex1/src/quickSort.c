@@ -3,7 +3,7 @@
 #include <string.h>
     #include "../include/quickSort.h"
 
-static void swap(void *a, void *b, size_t size) {
+void swap(void *a, void *b, size_t size) {
     char *temp = malloc(size);
     if (temp == NULL) return;
 
@@ -14,7 +14,7 @@ static void swap(void *a, void *b, size_t size) {
     free(temp);
 }
 
-static size_t choose_pivot(char *arr, size_t low, size_t high, size_t size, int (*compar)(const void *, const void *)) {
+size_t choose_pivot(char *arr, size_t low, size_t high, size_t size, int (*compar)(const void *, const void *)) {
     size_t mid = low + ((high - low)/ 2);       // Previene l'overflow (con low+high/2 overflow)
 
     void *first  = arr + low * size;
@@ -35,7 +35,7 @@ static size_t choose_pivot(char *arr, size_t low, size_t high, size_t size, int 
 
 }
 
-static size_t partion(char *arr, size_t low, size_t high, size_t size, int(*compar)(const void *, const void *)) {
+size_t partition(char *arr, size_t low, size_t high, size_t size, int(*compar)(const void *, const void *)) {
     // scelgo il pivot e lo metto al fondo
     size_t pivot_idx = choose_pivot(arr, low, high, size, compar);
     swap(arr + pivot_idx * size, arr + high * size, size);
@@ -45,7 +45,7 @@ static size_t partion(char *arr, size_t low, size_t high, size_t size, int(*comp
 
     // Partizione -> elementi > pivot a destra; <= pivot a sinistra
     for (size_t j = low; j < high; j++) {
-        if (compar(arr + j *size, pivot) > 0) {
+        if (compar(arr + j * size, pivot) <= 0) {
             if (i != j) {
                 swap(arr + i * size, arr + j * size, size);
             }
@@ -60,13 +60,13 @@ static size_t partion(char *arr, size_t low, size_t high, size_t size, int(*comp
 
 void quick_sort_recursive(char *arr, size_t low, size_t high, size_t size, int (*compar)(const void *, const void *)) {
     if (low < high) {
-        size_t pivot_idx = partion(arr, low, high, size, compar);
+        size_t pivot_idx = partition(arr, low, high, size, compar);
         
         if (pivot_idx > 0) {
             quick_sort_recursive(arr, low, pivot_idx - 1, size, compar);
-        } else {
-            quick_sort_recursive(arr, pivot_idx + 1, high, size, compar);
         }
+        quick_sort_recursive(arr, pivot_idx + 1, high, size, compar);
+        
     }
 }
 
