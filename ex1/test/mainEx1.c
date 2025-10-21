@@ -14,7 +14,7 @@
 void sort_records(FILE *infile, FILE *outfile, size_t field, size_t k) {
     // Controllo iniziale
     if (infile == NULL || outfile == NULL) {
-        fprintf(stderr, "ERROR - sort_records():    File non validi\n")
+        fprintf(stderr, "ERROR - sort_records():    File non validi\n");
         return;
     }
     // Carica i record in mememoria da infile
@@ -72,28 +72,43 @@ int main(int argc, char *argv[]) {
     // Parsing degli argomenti
     char *input_file  = argv[1];
     char *output_file = argv[2];
-    size_t field      = (size_t)strtol(argv[3]);
-    size_t k          = (size_t)strtol(argv[4]);
+    size_t field      = (size_t)strtol(argv[3], NULL, 10);
+    size_t k          = (size_t)strtol(argv[4], NULL, 10);
 
     // Validazione del campo
     if (field < 1 || field > 4) {
-        fprintf(stderr, "ERROR - 1 <= field <= 4");
+        fprintf(stderr, "ERROR - field non compreso tra 1 e 4");
         return 1;
     }
 
     // Apro infile e outfile
     FILE *infile = fopen(input_file, "rb");
-    if (infile == NULL || outfile == NULL) {
-        fprintf(stderr, "ERROR - impossibile aprire file di input %s\n", input_file)
+    if (infile == NULL) {
+        fprintf(stderr, "ERROR - impossibile aprire il file di input '%s'\n", input_file);
+        return 1;
     }
 
     FILE *outfile = fopen(output_file, "wb");
+    if (outfile == NULL) {
+        fprintf(stderr, "ERROR - impossibile aprire il file di output '%s'\n", output_file);
+        return 1;
+    }
 
-    //sort_records
+    // Chiamato alla funzione sort_records()
+    sort_records(input_file, output_file, field, k);
 
-    //chiudi files
+    // Chiudo i files
+    fclose(input_file);
+    fclose(output_file);
 
-    //end
-
+    printf("\n=== Operazione completata con successo! ===\n");
+    printf("  - File di input:  %s\n", input_file);
+    printf("  - File di output: %s\n", output_file);
+    printf("  - Campo usato:    %zu\n", field);
+    printf("  - Soglia k:       %zu\n", k);
+    printf("\nPer visualizzare il file ordinato:\n");
+    printf("  hexdump -C %s | head -n 50\n", output_file);
+    printf("\nPer verificare la dimensione:\n");
+    printf("  ls -lh %s\n", output_file);
     return 0;
 }
