@@ -8,15 +8,15 @@ int read_record(FILE *file, Record *record) {
     if (file == NULL || record == NULL) return -1;
 
     // Leggo il file
-    size_t read = fread(record, sizeof(Record), 1, file);
-    if (read != 1) {
-        if (feof(read)) return 0;       // Fine del file
+    size_t items_read = fread(record, sizeof(Record), 1, file);
+    if (items_read != 1) {
+        if (feof(file)) return 0;       // Fine del file
         return -1;                      // Errore di lettura    
     }
     return 1;
 }
 
-int write_record(FILE *file, Record *record) {
+int write_record(FILE *file, const Record *record) {
     // Controllo iniziale
     if (file == NULL || record == NULL) return -1;
 
@@ -64,7 +64,7 @@ int load_records_from_file(FILE *file, Record **records, size_t *count) {
 
 int save_records_to_file(FILE *file, const Record *records, size_t count) {
     // Controllo iniziale
-    if (file == NULL || records == NULL || count == NULL) return -1;
+    if (file == NULL || records == NULL) return -1;
 
     // Scrivo sul file
     size_t written = fwrite(records, sizeof(Record), count, file);
@@ -137,13 +137,13 @@ int compare_records_by_field3(const void *a, const void *b) {
 int (*get_comparator(size_t field))(const void *, const void *) {
     switch (field) {
     case 1:
-        return compare_by_id;
+        return compare_records_by_id;
     case 2:
-        return compare_by_field1;
+        return compare_records_by_field1;
     case 3:
-        return compare_by_field2;
+        return compare_records_by_field2;
     case 4:
-        return compare_by_field3;
+        return compare_records_by_field3;
     
     default:
         fprintf(stderr, "Numero del campo invalido: %zu\n", field);

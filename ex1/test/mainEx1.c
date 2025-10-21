@@ -40,7 +40,7 @@ void sort_records(FILE *infile, FILE *outfile, size_t field, size_t k) {
     clock_t start = clock(); 
 
     // Parte hybridSort
-    hybridsort(records, count, sizeof(Record), k, compar);
+    hybrid_sort(records, count, sizeof(Record), k, compar);
 
     // (End) Calcola il tempo
     clock_t end = clock();
@@ -67,13 +67,14 @@ int main(int argc, char *argv[]) {
         printf("            ├─ k=0        : ordina tutto con QuickSort\n");
         printf("            ├─ k>=#record : ordina tutto con SelectionSort\n");
         printf("            └─ altrimenti : usa QuickSort finchè l'array è >=k, poi SelectionSort\n");
+        return 1;
     }
 
     // Parsing degli argomenti
-    char *input_file  = argv[1];
-    char *output_file = argv[2];
-    size_t field      = (size_t)strtol(argv[3], NULL, 10);
-    size_t k          = (size_t)strtol(argv[4], NULL, 10);
+    char *input_file_name  = argv[1];
+    char *output_file_name = argv[2];
+    size_t field      = (size_t)atoi(argv[3]);
+    size_t k          = (size_t)atoi(argv[4]);
 
     // Validazione del campo
     if (field < 1 || field > 4) {
@@ -82,15 +83,16 @@ int main(int argc, char *argv[]) {
     }
 
     // Apro infile e outfile
-    FILE *infile = fopen(input_file, "rb");
-    if (infile == NULL) {
-        fprintf(stderr, "ERROR - impossibile aprire il file di input '%s'\n", input_file);
+    FILE *input_file = fopen(input_file_name, "rb");
+    if (input_file == NULL) {
+        fprintf(stderr, "ERROR - impossibile aprire il file di input '%s'\n", input_file_name);
         return 1;
     }
 
-    FILE *outfile = fopen(output_file, "wb");
-    if (outfile == NULL) {
-        fprintf(stderr, "ERROR - impossibile aprire il file di output '%s'\n", output_file);
+    FILE *output_file = fopen(output_file_name, "wb");
+    if (output_file == NULL) {
+        fprintf(stderr, "ERROR - impossibile aprire il file di output '%s'\n", output_file_name);
+        fclose(input_file);
         return 1;
     }
 
@@ -102,13 +104,14 @@ int main(int argc, char *argv[]) {
     fclose(output_file);
 
     printf("\n=== Operazione completata con successo! ===\n");
-    printf("  - File di input:  %s\n", input_file);
-    printf("  - File di output: %s\n", output_file);
+    printf("  - File di input:  %s\n", input_file_name);
+    printf("  - File di output: %s\n", output_file_name);
     printf("  - Campo usato:    %zu\n", field);
     printf("  - Soglia k:       %zu\n", k);
     printf("\nPer visualizzare il file ordinato:\n");
-    printf("  hexdump -C %s | head -n 50\n", output_file);
+    printf("  hexdump -C %s | head -n 50\n", output_file_name);
     printf("\nPer verificare la dimensione:\n");
-    printf("  ls -lh %s\n", output_file);
+    printf("  ls -lh %s\n", output_file_name);
+    
     return 0;
 }

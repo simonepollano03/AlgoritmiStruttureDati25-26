@@ -24,7 +24,7 @@
  *          - = 0 se primo elemento = secondo;
  *          - > 0 se primo elemento > secondo.
  */
-void hybridsort(void *base,
+void hybrid_sort(void *base,
                size_t nitems,
                size_t size,
                size_t k,

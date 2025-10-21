@@ -37,7 +37,7 @@ static size_t choose_pivot(char *arr, size_t low, size_t high, size_t size, int 
 
 }
 
-static size_t partion(char *arr, size_t low, size_t high, size_t size, int(*compar)(const void *, const void *)) {
+static size_t partition(char *arr, size_t low, size_t high, size_t size, int(*compar)(const void *, const void *)) {
     // scelgo il pivot e lo metto al fondo
     size_t pivot_idx = choose_pivot(arr, low, high, size, compar);
     swap(arr + pivot_idx * size, arr + high * size, size);
@@ -60,7 +60,7 @@ static size_t partion(char *arr, size_t low, size_t high, size_t size, int(*comp
     return i;
 }  
 
-static void hybridsort_recursive(char *arr, size_t low, size_t high, size_t size, size_t k, int (*compar)(const void *, const void *)) {
+static void hybrid_sort_recursive(char *arr, size_t low, size_t high, size_t size, size_t k, int (*compar)(const void *, const void *)) {
     size_t n = high - low + 1;
 
     if (n < k) {
@@ -72,15 +72,15 @@ static void hybridsort_recursive(char *arr, size_t low, size_t high, size_t size
         size_t pivot_idx = partition(arr, low, high, size, compar);
         
         if (pivot_idx > 0) {
-            hybridsort_recursive(arr, low, pivot_idx - 1, size, k, compar);
+            hybrid_sort_recursive(arr, low, pivot_idx - 1, size, k, compar);
         } else {
-            hybridsort_recursive(arr, pivot_idx - 1, high, size, k, compar);
+            hybrid_sort_recursive(arr, pivot_idx - 1, high, size, k, compar);
         }
     }
 }
 
-void hybridsort(void *base, size_t nitems, size_t size, size_t k, int (*compar)(const void *, const void *)) {
-    if (base == NULL || nitems <= 1 || size == 0 || k < 0 || compar == NULL) return;
+void hybrid_sort(void *base, size_t nitems, size_t size, size_t k, int (*compar)(const void *, const void *)) {
+    if (base == NULL || nitems <= 1 || size == 0 || compar == NULL) return;
 
     // Caso speciale -> uso solo quickSort
     if (k == 0) {
@@ -96,7 +96,7 @@ void hybridsort(void *base, size_t nitems, size_t size, size_t k, int (*compar)(
 
     // Per il resto uso algoritmo ibrido
     char *arr = (char *)base;
-    hybridsort_recursive(arr, 0, nitems - 1, size, k, compar);
+    hybrid_sort_recursive(arr, 0, nitems - 1, size, k, compar);
     
     printf("HybridSort completata con successo (k=%zu)\n", k);
 }

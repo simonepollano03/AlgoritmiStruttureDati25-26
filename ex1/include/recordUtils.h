@@ -82,7 +82,7 @@
      * @param b Puntatore al secondo record
      * @return < 0 se a.id < b.id, 0 se uguali, > 0 se a.id > b.id
      */
-    int compare_by_id(const void *a, const void *b);
+    int compare_records_by_id(const void *a, const void *b);
 
     /**
      * @brief Funzione di comparazione per il campo field1
@@ -93,7 +93,7 @@
      * @param b Puntatore al secondo record
      * @return < 0 se a.field1 < b.field1, 0 se uguali, > 0 se a.field1 > b.field1
      */
-    int compare_by_field1(const void *a, const void *b);
+    int compare_records_by_field1(const void *a, const void *b);
 
     /**
      * @brief Funzione di comparazione per il campo field2
@@ -104,7 +104,7 @@
      * @param b Puntatore al secondo record
      * @return < 0 se a.field2 < b.field2, 0 se uguali, > 0 se a.field2 > b.field2
      */
-    int compare_by_field2(const void *a, const void *b);
+    int compare_records_by_field2(const void *a, const void *b);
 
     /**
      * @brief Funzione di comparazione per il campo field3
@@ -115,7 +115,7 @@
      * @param b Puntatore al secondo record
      * @return < 0 se a.field3 < b.field3, 0 se uguali, > 0 se a.field3 > b.field3
      */
-    int compare_by_field3(const void *a, const void *b);
+    int compare_records_by_field3(const void *a, const void *b);
 
     /**
      * @brief Restituisce la funzione di comparazione appropriata per il campo specificato
