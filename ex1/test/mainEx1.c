@@ -50,7 +50,7 @@ void sort_records(FILE *infile, FILE *outfile, size_t field, size_t k) {
     // Salvo i record ottenuti in outfile
     printf("Salvataggio dei record ordinati...\n");
     if (save_records_to_file(outfile, records, count) != 0) {
-        fprintf(stderr, "ERROR - sort_records():    save_records_to_file");
+        fprintf(stderr, "ERROR - sort_records():    save_records_to_file\n");
     }
 
     // Libera la memoria
@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
 
     // Validazione del campo
     if (field < 1 || field > 4) {
-        fprintf(stderr, "ERROR - field non compreso tra 1 e 4");
+        fprintf(stderr, "ERROR - field non compreso tra 1 e 4\n");
         return 1;
     }
 
@@ -109,9 +109,8 @@ int main(int argc, char *argv[]) {
     printf("  - Campo usato:    %zu\n", field);
     printf("  - Soglia k:       %zu\n", k);
     printf("\nPer visualizzare il file ordinato:\n");
-    printf("  hexdump -C %s | head -n 50\n", output_file_name);
-    printf("\nPer verificare la dimensione:\n");
-    printf("  ls -lh %s\n", output_file_name);
+    printf("  - hexdump -C %s | head -n 50\n", output_file_name);
+    
     
     return 0;
 }

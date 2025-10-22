@@ -44,5 +44,4 @@
         }
 
         free(temp);
-        printf("SelectionSort completata con successo!\n");
     }

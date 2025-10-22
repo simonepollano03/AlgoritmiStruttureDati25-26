@@ -292,16 +292,18 @@ void test_record_sort() {
         {100, 1.0f, -20, "hippo"},
         {200, 2.0f, 15, "giraffe"}
     };
-    // DEBUG: stampa PRIMA dell'ordinamento
+    
+    /** DEBUG: stampa PRIMA dell'ordinamento *//*
     printf("DEBUG PRIMA: [0]='%s', [1]='%s', [2]='%s'\n", 
            records4[0].field3, records4[1].field3, records4[2].field3);
-    
+    *//** DEBUG: END*/
     hybrid_sort(records4, 3, sizeof(Record), 0, compare_records_by_field3);
     
-    // DEBUG: stampa DOPO l'ordinamento
+    /** DEBUG: stampa DOPO l'ordinamento *//*
     printf("DEBUG DOPO: [0]='%s', [1]='%s', [2]='%s'\n", 
            records4[0].field3, records4[1].field3, records4[2].field3);
-    
+    *//** DEBUG: END */
+
     TEST_ASSERT(strcmp(records4[0].field3, "giraffe") == 0 &&
                 strcmp(records4[1].field3, "hippo") == 0   &&
                 strcmp(records4[2].field3, "zebra") == 0, 

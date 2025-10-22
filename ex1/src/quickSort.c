@@ -1,82 +1,88 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-    #include "../include/quickSort.h"
+#include <time.h>
+#include "../include/quickSort.h"
 
 void swap(void *a, void *b, size_t size) {
     char *temp = malloc(size);
     if (temp == NULL) return;
-
+    
     memcpy(temp, a, size);
     memcpy(a, b, size);
     memcpy(b, temp, size);
-
+    
     free(temp);
 }
 
-size_t choose_pivot(char *arr, size_t low, size_t high, size_t size, int (*compar)(const void *, const void *)) {
-    size_t mid = low + ((high - low)/ 2);       // Previene l'overflow (con low+high/2 overflow)
-
-    void *first  = arr + low * size;
-    void *middle = arr + mid * size;
-    void *last   = arr + high * size;
-
-    if (compar(first, middle) > 0) {
-        swap(first, middle, size);
-    }
-    if (compar(middle, last) > 0) {
-        swap(middle, last, size);
-    }
-    if (compar(first, middle) > 0) {
-        swap(first, middle, size);
-    } 
-
-    return mid;
-
-}
-
-size_t partition(char *arr, size_t low, size_t high, size_t size, int(*compar)(const void *, const void *)) {
-    // scelgo il pivot e lo metto al fondo
-    size_t pivot_idx = choose_pivot(arr, low, high, size, compar);
-    swap(arr + pivot_idx * size, arr + high * size, size);
-
-    void *pivot = arr + high * size;
+// PARTIZIONE A TRE VIE (Dutch National Flag)
+void partition_three_way(char *base, size_t low, size_t high, size_t size, 
+                         int (*compar)(const void*, const void*), 
+                         size_t *lt, size_t *gt) {
+    // Pivot RANDOMIZZATO per evitare degenerazione
+    size_t pivot_index = low + rand() % (high - low + 1);
+    
+    void *pivot = malloc(size);
+    if (!pivot) return;
+    
+    memcpy(pivot, base + pivot_index * size, size);
+    
+    *lt = low;
+    *gt = high;
     size_t i = low;
-
-    // Partizione -> elementi > pivot a destra; <= pivot a sinistra
-    for (size_t j = low; j < high; j++) {
-        if (compar(arr + j * size, pivot) <= 0) {
-            if (i != j) {
-                swap(arr + i * size, arr + j * size, size);
-            }
+    
+    // Partizione: < pivot | = pivot | > pivot
+    while (i <= *gt) {
+        int cmp = compar(base + i * size, pivot);
+        
+        if (cmp < 0) {
+            // Elemento minore del pivot -> va a sinistra
+            swap(base + i * size, base + (*lt) * size, size);
+            (*lt)++;
+            i++;
+        } else if (cmp > 0) {
+            // Elemento maggiore del pivot -> va a destra
+            swap(base + i * size, base + (*gt) * size, size);
+            (*gt)--;
+            // NON incrementare i perché l'elemento scambiato non è stato ancora esaminato
+        } else {
+            // Elemento uguale al pivot -> resta al centro
             i++;
         }
     }
-    // Metto il pivot nella posizione corretta
-    swap(arr + i * size, arr + high * size, size);
+    
+    free(pivot);
+}
 
-    return i;
-}  
-
-void quick_sort_recursive(char *arr, size_t low, size_t high, size_t size, int (*compar)(const void *, const void *)) {
-    if (low < high) {
-        size_t pivot_idx = partition(arr, low, high, size, compar);
-        
-        if (pivot_idx > 0) {
-            quick_sort_recursive(arr, low, pivot_idx - 1, size, compar);
-        }
-        quick_sort_recursive(arr, pivot_idx + 1, high, size, compar);
-        
+void quick_sort_recursive(char *arr, size_t low, size_t high, size_t size, 
+                         int (*compar)(const void*, const void*)) {
+    if (low >= high) return;
+    
+    size_t lt, gt;
+    partition_three_way(arr, low, high, size, compar, &lt, &gt);
+    
+    // Ordina solo le parti con elementi diversi dal pivot
+    if (lt > low) {
+        quick_sort_recursive(arr, low, lt - 1, size, compar);
+    }
+    if (gt < high) {
+        quick_sort_recursive(arr, gt + 1, high, size, compar);
     }
 }
 
-void quick_sort(void *base, size_t nitems, size_t size, int (*compar)(const void *, const void *)) {
-    // Controllo iniziale
+void quick_sort(void *base, size_t nitems, size_t size, 
+               int (*compar)(const void*, const void*)) {
     if (base == NULL || nitems <= 1 || size == 0 || compar == NULL) return;
-
-    // Allocazione puntatori alla memoria
+    
+    // Inizializza il seed per la randomizzazione (fallo UNA SOLA VOLTA)
+    static int seeded = 0;
+    if (!seeded) {
+        srand(time(NULL));
+        seeded = 1;
+    }
+    
     char *arr = (char *)base;
-    quick_sort_recursive(arr, 0, nitems-1, size, compar);
-
+    quick_sort_recursive(arr, 0, nitems - 1, size, compar);
+    
     printf("QuickSort completata con successo!\n");
 }

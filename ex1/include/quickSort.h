@@ -3,11 +3,12 @@
     #include <stdlib.h>
     #include <string.h>
 
-    void swap_elements(void *a, void *b, size_t size);
+    void swap(void *a, void *b, size_t size);
     
-    size_t choose_pivot(char *arr, size_t low, size_t high, size_t size, int (*compar)(const void *, const void *));
-    
-    size_t partition(char *arr, size_t low, size_t high, size_t size, int (*compar)(const void *, const void *));
+    void partition_three_way(char *base, size_t low, size_t high, size_t size,
+                            int (*compar)(const void*, const void*),
+                            size_t *lt, size_t *gt);
+
     /**
      * @brief Algoritmo QuickSort
      * Ordina un array in-place utilizzando l'algoritmo quicksort.

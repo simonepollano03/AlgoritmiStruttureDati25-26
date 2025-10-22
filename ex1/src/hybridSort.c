@@ -5,22 +5,28 @@
     #include "../include/selectionSort.h"
     #include "../include/quickSort.h"
 
-static void hybrid_sort_recursive(char *arr, size_t low, size_t high, size_t size, size_t k, int (*compar)(const void *, const void *)) {
+static void hybrid_sort_recursive(char *arr, size_t low, size_t high, 
+                                  size_t size, size_t k, 
+                                  int (*compar)(const void*, const void*)) {
     size_t n = high - low + 1;
-
+    
     if (n < k) {
         selection_sort(arr + low * size, n, size, compar);
         return;
     }
-
+    
     if (low < high) {
-        size_t pivot_idx = partition(arr, low, high, size, compar);
+        size_t lt, gt;
         
-        if (pivot_idx > 0) {
-            hybrid_sort_recursive(arr, low, pivot_idx - 1, size, k, compar);
+        // USA PARTIZIONE A TRE VIE invece della normale partition
+        partition_three_way(arr, low, high, size, compar, &lt, &gt);
+        
+        if (lt > low) {
+            hybrid_sort_recursive(arr, low, lt - 1, size, k, compar);
         }
-        hybrid_sort_recursive(arr, pivot_idx + 1, high, size, k, compar);
-        
+        if (gt < high) {
+            hybrid_sort_recursive(arr, gt + 1, high, size, k, compar);
+        }
     }
 }
 
@@ -42,6 +48,4 @@ void hybrid_sort(void *base, size_t nitems, size_t size, size_t k, int (*compar)
     // Per il resto uso algoritmo ibrido
     char *arr = (char *)base;
     hybrid_sort_recursive(arr, 0, nitems - 1, size, k, compar);
-    
-    printf("HybridSort completata con successo (k=%zu)\n", k);
 }

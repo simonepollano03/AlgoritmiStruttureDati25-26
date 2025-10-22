@@ -47,7 +47,7 @@ $(TEST_TARGET): $(LIBS_SRCS) $(TEST_DIR)/testEx1.c | $(BIN_DIR)
 # Pulizia totale (rimuove anche i file .bin generati)
 clean:
 	rm -rf $(BIN_DIR)
-	rm -f $(DATA_DIR)/*.bin $(DATA_DIR)/sorted_*.bin
+	rm -f  $(DATA_DIR)/sorted_*.bin
 	@echo "✓ Pulizia totale completata"
 
 
