@@ -155,7 +155,7 @@ void quick_sort_recursive(char *arr, size_t low, size_t high, size_t size,
 
 Nei test che sono stati effettuati è stato usato un dataset di **18.000.000 record** (~648 MB).
 
-### Tempi di esecuzione per campo e valore di k:**
+### Tempi di esecuzione per campo e valore di k:
 
 
 <div align="center">
@@ -178,7 +178,7 @@ Nei test che sono stati effettuati è stato usato un dataset di **18.000.000 rec
 ### Caso con k=1000000  
 Con k=1.000.000, l'algoritmo ibrido (HybridSort) tenta di usare il SelectionSort su sottoarray di dimensione fino a ~1M elementi.
 
-### Analisi della complessità**  
+### Analisi della complessità
 SelectionSort: O(n²):  
 - Con (k) n=1.000.000 si effettuano circa 10¹² operazioni, quindi un trilione di operazioni quindi il tempo di esecuzione è **> 30 minuti**, potrebbe anche metterci ore.
 
