@@ -238,19 +238,9 @@ make clean
 
 # Compila ed esegue i test automatici
 make test
-```
 
-**Output della compilazione:**
-```bash
-$ make all
-mkdir -p bin
-gcc -Wall -Wextra -Werror -std=c11 -O2 -g -Iinclude \
-    -o bin/mainEx1 src/selectionSort.c src/quickSort.c \
-    src/hybridSort.c src/recordUtils.c test/mainEx1.c -lm
-gcc -Wall -Wextra -Werror -std=c11 -O2 -g -Iinclude \
-    -o bin/testEx1 src/selectionSort.c src/quickSort.c \
-    src/hybridSort.c src/recordUtils.c test/testEx1.c -lm
-✓ Compilazione completata con successo
+# Stampa la sintassi di utilizzo dell'esercizio 
+make howto
 ```
 
 ### Esecuzione
