@@ -38,7 +38,7 @@ int load_records_from_file(FILE *file, Record **records, size_t *count) {
     fseek(file, 0, SEEK_SET);
 
     if (file_size < 0 || file_size % sizeof(Record) != 0) {
-        fprintf(stderr, "Lunghezza del file invalida\n");
+        fprintf(stderr, "ERROR - Lunghezza del file invalida\n");
         return -1;
     }
 
@@ -47,14 +47,14 @@ int load_records_from_file(FILE *file, Record **records, size_t *count) {
     // Alloco la memoria per tutti i record
     *records = (Record *)malloc(*count * sizeof(Record));
     if (*records == NULL) {
-        fprintf(stderr, "Allocazione della memoria fallita\n");
+        fprintf(stderr, "ERROR - Allocazione della memoria fallita\n");
         return -1;
     }
 
     // Leggo tutti i record in una volta
     size_t read = fread(*records, sizeof(Record), *count, file);
     if (read != *count) {
-        fprintf(stderr, "Lettura di tutti i records fallita\n");
+        fprintf(stderr, "ERROR - Lettura di tutti i records fallita\n");
         return -1;
     }
 
@@ -69,7 +69,7 @@ int save_records_to_file(FILE *file, const Record *records, size_t count) {
     // Scrivo sul file
     size_t written = fwrite(records, sizeof(Record), count, file);
     if (written != count) {
-        fprintf(stderr, "Scrittura di tutti i records fallita\n");
+        fprintf(stderr, "ERROR - Scrittura di tutti i records fallita\n");
         return -1;
     }
 
@@ -149,7 +149,7 @@ int (*get_comparator(size_t field))(const void *, const void *) {
         return compare_records_by_field3;
     
     default:
-        fprintf(stderr, "Numero del campo invalido: %zu\n", field);
+        fprintf(stderr, "ERROR - Numero del campo invalido: %zu\n", field);
         return NULL;
     }
 }
