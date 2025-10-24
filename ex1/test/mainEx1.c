@@ -5,12 +5,6 @@
     #include "../include/hybridSort.h"
     #include "../include/recordUtils.h"
 
-/**
- * @brief ..
- * 
- * @param ..
- * 
- */
 void sort_records(FILE *infile, FILE *outfile, size_t field, size_t k) {
     // Controllo iniziale
     if (infile == NULL || outfile == NULL) {
