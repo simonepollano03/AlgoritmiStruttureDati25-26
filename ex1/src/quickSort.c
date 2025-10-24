@@ -54,7 +54,18 @@ void partition_three_way(char *base, size_t low, size_t high, size_t size,
     free(pivot);
 }
 
-void quick_sort_recursive(char *arr, size_t low, size_t high, size_t size, 
+/**
+ * @brief Funzione ricorsiva per QuickSort
+ * 
+ * Implementa la ricorsione del QuickSort con partizione a tre vie.
+ * 
+ * @param arr Array da ordinare
+ * @param low Indice iniziale
+ * @param high Indice finale  
+ * @param size Dimensione elemento in bytes
+ * @param compar Funzione di comparazione
+ */
+static void quick_sort_recursive(char *arr, size_t low, size_t high, size_t size, 
                          int (*compar)(const void*, const void*)) {
     if (low >= high) return;
     

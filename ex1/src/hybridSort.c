@@ -5,6 +5,18 @@
     #include "../include/selectionSort.h"
     #include "../include/quickSort.h"
 
+/**
+ * @brief Funzione ricorsiva per hybrid sort
+ * 
+ * Implementa la ricorsione dell'HybridSort con partizione a tre vie.
+ * 
+ * @param arr Array da ordinare
+ * @param low Indice iniziale
+ * @param high Indice finale
+ * @param size Dimensione elemento
+ * @param k Soglia algoritmo ibrido
+ * @param compar Funzione comparazione
+ */
 static void hybrid_sort_recursive(char *arr, size_t low, size_t high, 
                                   size_t size, size_t k, 
                                   int (*compar)(const void*, const void*)) {

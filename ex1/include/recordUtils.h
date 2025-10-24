@@ -6,20 +6,15 @@
     #include <string.h>
 
     /**
-     * @brief Struttura Record - esattamente 36 bytes
+     * @brief Struttura Record - 36 bytes
      * 
-     * Rappresenta un record del file binario records.bin
-     * Layout in memoria (little-endian):
-     * - Byte 0-7:   id (uint64_t)
-     * - Byte 8-11:  field1 (float, IEEE 754)
-     * - Byte 12-19: field2 (int64_t)
-     * - Byte 20-35: field3 (stringa di 16 caratteri, padding con '\0')
+     * Layout: id(8) + field1(4) + field2(8) + field3(16)
      */
     typedef struct {
-        uint64_t id;            /**< 8 bytes - intero senza segno a 64 bit */
-        float field1;           /**< 4 bytes - numero in virgola mobile */
-        int64_t field2;         /**< 8 bytes - intero con segno a 64 bit */
-        char field3[16];        /**< 16 bytes - stringa (max 15 caratteri + '\0') */
+        uint64_t id;            /**< Intero senza segno a 64 bit */
+        float field1;           /**< Float a 32 bit */
+        int64_t field2;         /**< Intero con segno a 64 bit */
+        char field3[16];        /**< Stringa (max 15 char + '\0') */
     } Record;
 
     /**
@@ -72,7 +67,10 @@
      */
     void print_record(const Record *record);
 
+    
+
     /*========= FUNZIONI PRINCIPALI =========*/
+
     /**
      * @brief Funzione di comparazione per il campo id
      * 

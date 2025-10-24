@@ -153,7 +153,7 @@ void quick_sort_recursive(char *arr, size_t low, size_t high, size_t size,
 
 ## Analisi Dei risultati
 
-Nei test che sono stati effettuati è stato usato un dataset di **18.000.000 record** (~648 MB).
+Nei test che sono stati effettuati è stato usato un dataset di **20.000.000 record** (~648 MB).
 
 ### Tempi di esecuzione per campo e valore di k:
 

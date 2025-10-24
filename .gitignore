@@ -28,3 +28,7 @@ records.bin*
 .vscode/
 .idea/
 *.code-workspace
+
+#Doxyfile/docs
+docs/   
+#forse
