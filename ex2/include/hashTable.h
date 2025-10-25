@@ -15,7 +15,7 @@
      * @return HashTable* Puntatore alla tavola hash creata, NULL in caso di errore
      */
     HashTable* hash_table_create(int (*compare)(const void*,const void*),
-                                unsigned long (*f2)(const void*));
+                                unsigned long (*hash)(const void*));
 
     /**
      * @brief Inserisce o aggiorna una coppia chiave-valore nella tavola hash
