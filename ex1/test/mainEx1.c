@@ -73,21 +73,21 @@ int main(int argc, char *argv[]) {
     // Validazione del campo
     if (field < 1 || field > 4) {
         fprintf(stderr, "ERROR - field non compreso tra 1 e 4\n");
-        return 1;
+        return EXIT_FAILURE;
     }
 
     // Apro infile e outfile
     FILE *input_file = fopen(input_file_name, "rb");
     if (input_file == NULL) {
         fprintf(stderr, "ERROR - impossibile aprire il file di input '%s'\n", input_file_name);
-        return 1;
+        return EXIT_FAILURE;
     }
 
     FILE *output_file = fopen(output_file_name, "wb");
     if (output_file == NULL) {
         fprintf(stderr, "ERROR - impossibile aprire il file di output '%s'\n", output_file_name);
         fclose(input_file);
-        return 1;
+        return EXIT_FAILURE;
     }
 
     // Chiamato alla funzione sort_records()
@@ -106,5 +106,5 @@ int main(int argc, char *argv[]) {
     printf("  - hexdump -C %s | head -n 50\n", output_file_name);
     
     
-    return 0;
+    return EXIT_SUCCESS;
 }

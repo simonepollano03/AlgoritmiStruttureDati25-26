@@ -123,7 +123,7 @@ void test_selection_sort_large() {
     selection_sort(arr, nitems, sizeof(int), compare_int);
     int sorted = is_sorted_int(arr, nitems);
     free(arr);
-    TEST_ASSERT(sorted, "SelectionSort con array grande (100 elementi)");
+    TEST_ASSERT(sorted, "SelectionSort con array grande (1000 elementi)");
 }
 
 // ================= TEST QUICKSORT =================
@@ -177,7 +177,7 @@ void test_quick_sort_large() {
     quick_sort(arr, nitems, sizeof(int), compare_int);
     int sorted = is_sorted_int(arr, nitems);
     free(arr);
-    TEST_ASSERT(sorted, "QuickSort con array grande (100 elementi)");
+    TEST_ASSERT(sorted, "QuickSort con array grande (1000 elementi)");
 }
 
 // ================= TEST HYBRIDSORT =================
@@ -385,5 +385,5 @@ int main(void) {
             free(failed_tests[i]);
         }
     }
-    return (test_failed == 0) ? 0 : 1;
+    return (test_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
