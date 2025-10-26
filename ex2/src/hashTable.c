@@ -157,17 +157,21 @@ void hash_table_remove(HashTable *table, const void *key) {
     // Cerco la chiave ed elimino il valore
     while (current != NULL) {
         if (table->compare(current->key, key) == 0) {
-            table->buckets[index] = current->next;
-        } else {
-            prev->next = current->next;
+            // Trovo la chiave da rimuovere
+            if (prev == NULL) {
+                // Primo nodo della lista
+                table->buckets[index] = current->next;
+            } else {
+                // Nodo intermedio o finale
+                prev->next = current->next;
+            }
+            free(current);
+            table->size--;
+            return;
         }
-        free(current);
-        table->size--;
-        return;
+        prev = current;
+        current = current->next;        
     }
-    prev = current;
-    current = current->next;        
-
 }
 
 int hash_table_size(const HashTable *table) {
