@@ -127,26 +127,86 @@ void* hash_table_get(const HashTable *table, const void *key) {
     if (table == NULL || key == NULL) return NULL;
 
     // Calcola valore hash della key
+    unsigned long hash_value = table->hash(key);
+    size_t index = hash_value % table->capacity;
 
-    // cerco la chiave e ritorno il valore corrente poi return null,
+    // Cerco la chiave e ritorno il valore corrente
+    HashNode *current = table->buckets[index];
+    while (table->compare(current->key, key) == 0) {
+        return current->value;
+    }
+    
+    return NULL;
 }
 
 int hash_table_contains_key(const HashTable *table, const void *key) {
-
+    return hash_table_get(table, key) != NULL;
 }
 
 void hash_table_remove(HashTable *table, const void *key) {
+    // Controllo iniziale
+    if (table == NULL || key == NULL) return;
+
+    // Calcola valore hash della key
+    unsigned long hash_value = table->hash(key);
+    size_t index = hash_value % table->capacity;
+
+    HashNode *current = table->buckets[index];
+    HashNode *prev = NULL;
+
+    // Cerco la chiave ed elimino il valore
+    while (current != NULL) {
+        if (table->compare(current->key, key) == 0) {
+            table->buckets[index] = current->next;
+        } else {
+            prev->next = current->next;
+        }
+        free(current);
+        table->size--;
+        return;
+    }
+    prev = current;
+    current = current->next;        
 
 }
 
 int hash_table_size(const HashTable *table) {
-
+    if (table == NULL) return 1;
+    
+    return (int)table->size;
 }
 
 void** hash_table_keyset(const HashTable *table) {
+    // Controllo iniziale
+    if (table == NULL || table->size == 0) return NULL;
 
+    void **keys = (void **)malloc(table->size * sizeof(void *));
+    if (keys == NULL) return NULL;
+
+    size_t key_index = 0;
+    for (size_t i = 0; i < table->capacity; i++) {
+        HashNode *current = table->buckets[i];
+        while (current != NULL) {
+            keys[key_index++] = current->key;
+            current = current->next;
+        }
+    }
+    
+    return keys;
 }
 
 void hash_table_free(HashTable *table) {
-
+    if (table == NULL) return;
+    
+    for (size_t i = 0; i < table->capacity; i++) {
+        HashNode* current = table->buckets[i];
+        while (current != NULL) {
+            HashNode* next = current->next;
+            free(current);
+            current = next;
+        }
+    }
+    
+    free(table->buckets);
+    free(table);
 }
