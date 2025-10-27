@@ -2,25 +2,45 @@
 #include <string.h>
     #include "../include/hashTable.h"
 
+/** @brief Capacità iniziale della tavola hash */
 #define INITIAL_CAPACITY 16
+
+/** @brief Fattore di carico massimo prima del ridimensionamento (75%) */
 #define LOAD_FACTOR 0.75
 
-// Struttura Nodo della lista concatenata 
+/**
+ * @brief Nodo della lista concatenata per gestire le collisioni
+ * 
+ * Ogni bucket della tavola hash contiene una lista concatenata di nodi.
+ * Questo permette di gestire multiple chiavi che collidono sullo stesso indice.
+ */
 typedef struct hash_node {
-    void* key;
-    void* value;
-    struct hash_node* next;
+    void* key;                  /**< Puntatore alla chiave */
+    void* value;                /**< Puntatore al valore associato */
+    struct hash_node* next;     /**< Puntatore al prossimo nodo nella lista */
 } HashNode;
 
-// Struttura tavola hash
+/**
+ * @brief Struttura interna della tavola hash
+ * 
+ * Contiene l'array di bucket (liste concatenate), la capacità totale,
+ * il numero di elementi e i puntatori alle funzioni di confronto e hash.
+ */
 struct hash_table {
-    HashNode** buckets;      // array liste concatenate
-    size_t capacity;
-    size_t size;
-    int (*compare)(const void *, const void *);
-    unsigned long (*hash)(const void *);
+    HashNode** buckets;                             /**< Array di puntatori alle liste */
+    size_t capacity;                                /**< Capacità totale (numero di bucket) */
+    size_t size;                                    /**< Numero di elementi inseriti */
+    int (*compare)(const void*, const void*);       /**< Funzione di confronto tra chiavi */
+    unsigned long (*hash)(const void*);             /**< Funzione di hash */
 };
 
+/**
+ * @brief Crea un nuovo nodo della lista
+ * 
+ * @param key Puntatore alla chiave
+ * @param value Puntatore al valore
+ * @return HashNode* Puntatore al nodo creato, NULL in caso di errore
+ */
 static HashNode* create_node(const void *key, const void *value) {
     // Alloco memoria dinamica per l'HashNode
     HashNode *node = (HashNode *)malloc(sizeof(HashNode));
@@ -34,6 +54,17 @@ static HashNode* create_node(const void *key, const void *value) {
     return node;
 }
 
+/**
+ * @brief Ridimensiona la tavola hash raddoppiando la capacità
+ * 
+ * Questa funzione viene chiamata automaticamente quando il fattore di carico
+ * supera la soglia definita. Crea una nuova tabella con capacità doppia e
+ * reinserisce tutti gli elementi.
+ * 
+ * @param table Puntatore alla tavola hash da ridimensionare
+ * 
+ * @note In caso di fallimento dell'allocazione, la tabella originale resta invariata
+ */
 static void resize(HashTable *table) {
     // Salvo la capacità e i bucket attuale
     size_t old_capacity = table->capacity;
@@ -187,13 +218,20 @@ void** hash_table_keyset(const HashTable *table) {
     // Controllo iniziale
     if (table == NULL || table->size == 0) return NULL;
 
+    // Alloca la memoria per le chiavi
     void **keys = (void **)malloc(table->size * sizeof(void *));
     if (keys == NULL) return NULL;
 
     size_t key_index = 0;
+
+    // Scorri tutti i bucket dell'hashTable
     for (size_t i = 0; i < table->capacity; i++) {
         HashNode *current = table->buckets[i];
+        
+        // Scorre la lista collegata la bucket corrente
         while (current != NULL) {
+            
+            // Aggiungi la chiave corrente all'array di chiavi
             keys[key_index++] = current->key;
             current = current->next;
         }
@@ -203,14 +241,18 @@ void** hash_table_keyset(const HashTable *table) {
 }
 
 void hash_table_free(HashTable *table) {
+    // Controllo iniziale
     if (table == NULL) return;
     
+    // Scorri i bucket dell'hashTable
     for (size_t i = 0; i < table->capacity; i++) {
         HashNode* current = table->buckets[i];
+        
+        // Libera tutti i nodi della lista collegata al bucket corrente
         while (current != NULL) {
-            HashNode* next = current->next;
-            free(current);
-            current = next;
+            HashNode* next = current->next;      // Salva il puntatore al nodo successivo
+            free(current);                       // Libera il nodo corrente
+            current = next;                      // Passa al nodo successivo
         }
     }
     
