@@ -8,7 +8,9 @@
 ├── `src/`               # Codici sorgente (.c) per gli algoritmi di ordinamento  
 ├── `include/`           # Files header (.h)  
 ├── `test/`              # Codice di test e main   
-├── `bin/`               # Files oggetto (generati da make)  
+├── `bin/`               # Files oggetto (generati da make) 
+├── `docs/`              # Documentazione generata (HTML)    
+├── `Doxifile`           # Configurazione Doxygen  
 ├── `Makefile`           # Build automation  
 └── `README1.md`         # Questo file 
 
@@ -230,7 +232,7 @@ L'ipotesi iniziale (SelectionSort più efficiente su array piccoli per minor ove
 
 Il progetto utilizza un Makefile per automatizzare la compilazione. I comandi disponibili sono:
 ```bash
-# Compila tutti gli eseguibili (main_ex1 e test_ex1)
+# Compila tutti gli eseguibili (mainEx1 e testEx1)
 make all
 
 # Pulisce i file compilati
