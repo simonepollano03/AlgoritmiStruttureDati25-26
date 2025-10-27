@@ -145,7 +145,7 @@ In particolare, è stato specificato:
 - Nella funzione `_get()`, la condizione del ciclo è errata e deve essere `while(current != NULL)`
 
 #### 4. Unit testing in `testEx2.c` con LLM
-**prompt**:  
+**Prompt**:  
 "Genera unit test completi per la hash table coprendo le diverse funzioni di creazione, inserimento singolo/multiplo, aggiornamento, get con chiavi inesistenti, remove con collisioni, keyset, casi con NULL, stress test con 1000 elementi"
 
 **Risultato**:  
