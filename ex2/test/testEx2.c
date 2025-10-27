@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
     #include "../include/hashTable.h"
+    #include "unity/unity.h"
 
 static HashTable *table;
 
@@ -25,18 +26,18 @@ static unsigned long string_hash(const void *key) {
     unsigned long hash = 5381;
     int c;
 
-    while (c = *str++) {
+    while ((c = *str++)) {
         hash = ((hash << 5) + hash) + c;
     }
 
     return hash;
 }
 
-static void set_up(void) {
+void setUp(void) {           // Rinominata per Unity
     table = NULL;
 }
 
-static void tear_down(void) {
+void tearDown(void) {        // Rinominata per Unity
     if (table != NULL) {
         hash_table_free(table);
         table = NULL;
@@ -68,8 +69,8 @@ static void test_hash_table_put_single(void) {
     TEST_ASSERT_EQUAL_INT(1, hash_table_size(table));
 
     int *result = (int *)hash_table_get(table, key);
-    TEST_ASSER_NOT_NULL(result);
-    TEST_ASSER_EQUAL_INT(42, *result);
+    TEST_ASSERT_NOT_NULL(result);
+    TEST_ASSERT_EQUAL_INT(42, *result);
 }
 
 static void test_hash_table_put_multiple(void) {
@@ -87,8 +88,8 @@ static void test_hash_table_put_multiple(void) {
 
     for (int i = 0; i < n_values; i++) {
         int *result = (int *)hash_table_get(table, keys[i]);
-        TEST_ASSER_NOT_NULL(result);
-        TEST_ASSER_EQUAL_INT(values[i], *result);
+        TEST_ASSERT_NOT_NULL(result);
+        TEST_ASSERT_EQUAL_INT(values[i], *result);
     }
 }
 
@@ -227,8 +228,8 @@ static void test_hash_table_keyset_empty(void) {
 static void test_hash_table_with_integers(void) {
     table = hash_table_create(string_compare, string_hash);
     
-    char *keys[] = {10, 20, 30};
-    int values[] = {"dieci", "venti", "trenta"};
+    int keys[] = {10, 20, 30};
+    char *values[] = {"dieci", "venti", "trenta"};
     int n_values = 3;
 
     for (int i = 0; i < n_values; i++) {
@@ -280,7 +281,7 @@ static void test_hash_table_null_operations(void) {
     TEST_ASSERT_NULL(result);
 
     TEST_ASSERT_FALSE(hash_table_contains_key(NULL, "test"));
-    TEST_ASSERT_NULL(hash_table_contains_key(table, NULL));
+    TEST_ASSERT_FALSE(hash_table_contains_key(table, NULL));
 
     hash_table_remove(NULL, "test");
     hash_table_remove(table, NULL);
@@ -307,7 +308,7 @@ int main(void) {
      printf("--- TEST INSERIMENTO ---\n");
     RUN_TEST(test_hash_table_put_single);
     RUN_TEST(test_hash_table_put_multiple);
-    RUN_UPDATE(test_hash_table_put_update);
+    RUN_TEST(test_hash_table_put_update);
     printf("\n");
 
     // Test get

@@ -132,8 +132,11 @@ void* hash_table_get(const HashTable *table, const void *key) {
 
     // Cerco la chiave e ritorno il valore corrente
     HashNode *current = table->buckets[index];
-    while (table->compare(current->key, key) == 0) {
-        return current->value;
+    while (current != NULL) {
+        if (table->compare(current->key, key) == 0) {
+            return current->value;
+        }
+        current = current->next;
     }
     
     return NULL;
@@ -175,7 +178,7 @@ void hash_table_remove(HashTable *table, const void *key) {
 }
 
 int hash_table_size(const HashTable *table) {
-    if (table == NULL) return 1;
+    if (table == NULL) return 0;
     
     return (int)table->size;
 }

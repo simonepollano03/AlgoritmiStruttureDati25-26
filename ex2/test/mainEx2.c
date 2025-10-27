@@ -17,7 +17,7 @@ static unsigned long string_hash(const void *key) {
     int c;
 
     // Scorro ogni carattere della stringa e aggiorno il valore hash
-    while (c = *str++) {
+    while ((c = *str++)) {
         hash = ((hash << 5) + hash) + c;        // hash * 33 + c
     }
 
@@ -107,7 +107,7 @@ static int process_file(const char *file_name, HashTable *table) {
                 fclose(file);
                 return 1;
             }
-            strcpy(file, word);
+            strcpy(key, word);
 
             int *value = (int *)malloc(sizeof(int));
             if (value == NULL) {
@@ -147,39 +147,40 @@ static void free_table_data(HashTable *table) {
 
 int main (int argc, char *argv[]) {
     if (argc != 3) {
-        fprintf(stderr, "Usa: %s <percorso_file> <lunghezza_minima>", argv[0]);
+        fprintf(stderr, "Usa: %s <percorso_file> <lunghezza_minima>\n", argv[0]);
         return EXIT_FAILURE;
     }
 
     const char *file_name = argv[1];
     int min_length = atoi(argv[2]);
     if (min_length <= 0) {
-        fprintf(stderr, "ERROR - La lunghezza minima deve essere maggiore di 0");
+        fprintf(stderr, "ERROR - La lunghezza minima deve essere maggiore di 0\n");
         return EXIT_FAILURE;
     }
 
 
     // Crea l'hashTable
-    const char *table = hash_table_create(string_compare, string_hash);
+    HashTable *table = hash_table_create(string_compare, string_hash);
     if (table == NULL) {
-        fprintf(stderr, "ERROR - Impossibile creare la tavola hash");
+        fprintf(stderr, "ERROR - Impossibile creare la tavola hash\n");
         return EXIT_FAILURE;
     }
 
+    printf("════════════════════════════════════════════════════════\n\n");
     // Processa il file
-    printf("Lettura del file '%s'...", file_name);
-    if (!process_file(file_name, table)) {
-        fprintf(stderr, "ERROR - Errore durante la lettura del file");
+    printf("Lettura del file '%s'...\n", file_name);
+    if (process_file(file_name, table) != 0) {
+        fprintf(stderr, "ERROR - Errore durante la lettura del file\n");
         return EXIT_FAILURE;
     }
 
-    printf("Parole uniche trovate: %d", hash_table_size(table));
+    printf("Parole uniche trovate: %d\n", hash_table_size(table));
 
     // Trovo la parola più frequente
     char *most_frequent = find_most_frequent_word(table, (size_t)min_length);
     if(most_frequent != NULL) {
         int *freq = (int *)hash_table_get(table, most_frequent);
-        printf("\nParola più frequente (lunghezza >= %d): %s", min_length, most_frequent);
+        printf("\nParola più frequente (lunghezza >= %d): %s\n", min_length, most_frequent);
         printf("Frequenza: %d occorrenze\n", *freq);
     } else {
         printf("\nNessuna parola trovata con lunghezza >= %d", min_length);
@@ -187,6 +188,7 @@ int main (int argc, char *argv[]) {
 
     free_table_data(table);
     hash_table_free(table);
+    printf("\n════════════════════════════════════════════════════════\n");
 
     return EXIT_SUCCESS;
 }
