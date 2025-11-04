@@ -41,13 +41,51 @@ static int queue_enqueue(Queue* queue, void* data) {
     if (queue_is_empty(queue)) {
         queue->front = new_node;
         queue->rear = new_node;
+    } else {
+        queue->rear->next = new_node;
+        queue->rear = new_node; 
     }
 
-    /**continuare */
+    queue->size++;
+
+    return 1;
 }
 
 
 // dequeue si intede che inserisce un elemento all'inizio alla coda
-static int queue_dequeue(Queue* queue, void* data) {}
+static int queue_dequeue(Queue* queue) {
+    if (queue_is_empty(queue)) return NULL;
 
-/**continuare */
+    QueueNode* temp = queue->front;
+    void* data = temp->data;
+
+    queue->front = queue->front->next;
+    if (queue->front == NULL) {
+        queue->rear = NULL;
+    }
+
+    free(temp);
+    queue->size--;
+
+    return data;
+}
+
+static void queue_free(Queue* queue) {
+    if (queue == NULL) return;
+
+    while (!queue_is_empty(queue)) {
+        queue_dequeue(queue);
+    }
+
+    free(queue);
+}
+
+void** breadth_first_visit(Graph gr, void* start,
+                            int (*compare)(const void*, const void*),
+                            unsigned long (*hash)(const void*)) {
+                                
+    if (gr == NULL || start == NULL || 
+        compare == NULL || hash == NULL) return NULL;
+    
+    
+}
