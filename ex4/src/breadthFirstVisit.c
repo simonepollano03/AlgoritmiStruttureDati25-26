@@ -114,16 +114,16 @@ void** breadth_first_visit(Graph gr, void* start,
     }
 
     // Marco il nodo iniziale come visitato e lo aggiungo alla coda
-    int* visited_market = (int*)malloc(sizeof(int));
-    if (visited_market == NULL) {
+    int* visited_marker = (int*)malloc(sizeof(int));
+    if (visited_marker == NULL) {
         free(result);
         queue_free(queue);
         hash_table_free(visited);
         return NULL;
     }
-    *visited_market = 1;
+    *visited_marker = 1;
 
-    hash_table_put(visited, start, visited_market);
+    hash_table_put(visited, start, visited_marker);
     queue_enqueue(queue, start);
 
     // BFV principale
