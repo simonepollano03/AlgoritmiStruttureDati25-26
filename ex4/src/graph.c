@@ -119,72 +119,135 @@ Graph graph_create(int labelled, int directed,
                    int (*compare)(const void*, const void*),
                    unsigned long (*hash)(const void*)) {
     
-//    if
+    if (compare == NULL || hash == NULL) return NULL;
+
+    struct graph* gr = (struct graph*)malloc(sizeof(struct graph));
+    if (gr == NULL) return NULL;
+
+    gr->adjacency_map = hash_table_create(compare, hash);
+    if(gr->adjacency_map == NULL) {
+        free(gr);
+        return NULL;
+    }
+
+    gr->directed  = directed;
+    gr->labelled  = labelled;
+    gr->num_nodes = 0;
+    gr->num_edges = 0;
+    gr->compare   = compare;
+    gr->hash      = hash;
+
+    return gr;
 }
 
 int graph_is_directed(const Graph gr) {
-
+    if (gr == NULL) return 0;
+    return gr->directed;
 }
 
 int graph_is_labelled(const Graph gr) {
-
+    if (gr == NULL) return 0;
+    return gr->labelled;
 }
 
 
 int graph_add_node(Graph gr, const void* node) {
+    if (gr == NULL || node == NULL) return -1;
 
+    // Se il nodo esiste già ritorno 0
+    if (hash_table_contains_key(gr->adjacency_map, node)) {
+        return 0;
+    }
+
+    // Creo una nuova lista di adiacenza vuota
+    AdjacencyList* list = adjacency_list_create();
+    if (list == NULL) return -1;
+
+    // Aggiungo il nodo alla mappa
+    hash_table_put(gr->adjacency_map, nod, list);
+    gr->num_nodes++;
+
+    reutrn 1;
 }
 
 
 int graph_contains_node(const Graph gr, const void* node) {
+    if (gr == NULL) return 0;
 
+    return hash_table_contains_key(gr->adjacency_map, node);
 }
 
 
 int graph_remove_node(Graph gr, const void* node) {
+    if (gr == NULL || node == NULL) return -1;
+
+    // Verifico se il nodo esiste
+    if (!graph_contains_node(gr, node)) return 0;
+
+    // Ottengo tutti i suoi nodi
+    void** nodes = hash_table_keyset(gr-<adjancency_map);
+    if (nodes == NULL) return -1;
+
+    int size = hash_table_size(gr->adjacency_map);
+
+    // Rimuovo gli archi che puntano al nodo
+    for (int i = 0; i < size; i++) {
+        if (gr->compare(nodes[i], node) != 0) {
+
+        }
+    }
 
 }
 
 int graph_num_nodes(const Graph gr) {
-
+    if (gr == NULL) return 0;
+    return gr->num_nodes; 
 }
 
 void** graph_get_nodes(const Graph gr) {
+    if (gr == NULL) return NULL;
 
-}
+}  
 
 int graph_add_edge(Graph gr, const void* node1, const void* node2, const void* label) {
-
+    if (gr == NULL || node1 == NULL || node2 == NULL ) return -1;
 }
 
 int graph_contains_edge(const Graph gr, const void* node1, const void* node2) {
+        if (gr == NULL || node1 == NULL || node2 == NULL ) return -1;
 
 }
 
 int graph_remove_edge(Graph gr, const void* node1, const void* node2) {
+    if (gr == NULL || node1 == NULL || node2 == NULL ) return -1;
 
 }
 
 int graph_num_edges(const Graph gr) {
-
+    if (gr == NULL) return 0;
+    return gr->num_edges;
 }
 
 Edge** graph_get_edges(const Graph gr) {
+    if (gr == NULL) return NULL;
 
 }
 
 void* graph_get_label(const Graph gr, const void* node1, const void* node2) {
+    if (gr == NULL || node1 == NULL || node2 == NULL ) return NULL;
 
 }
 
 void** graph_get_neighbours(const Graph gr, const void* node) {
+        if (gr == NULL || node == NULL) return NULL;
 
 }
 
 int graph_num_neighbours(const Graph gr, const void* node) {
+        if (gr == NULL || node == NULL) return NULL;
 
 }
 
 void graph_free(Graph gr) {
-
+    if (gr == NULL) return;
 }
