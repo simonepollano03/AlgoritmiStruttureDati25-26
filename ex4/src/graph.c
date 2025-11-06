@@ -164,10 +164,10 @@ int graph_add_node(Graph gr, const void* node) {
     if (list == NULL) return -1;
 
     // Aggiungo il nodo alla mappa
-    hash_table_put(gr->adjacency_map, nod, list);
+    hash_table_put(gr->adjacency_map, node, list);
     gr->num_nodes++;
 
-    reutrn 1;
+    return 1;
 }
 
 
@@ -185,7 +185,7 @@ int graph_remove_node(Graph gr, const void* node) {
     if (!graph_contains_node(gr, node)) return 0;
 
     // Ottengo tutti i suoi nodi
-    void** nodes = hash_table_keyset(gr-<adjancency_map);
+    void** nodes = hash_table_keyset(gr->adjacency_map);
     if (nodes == NULL) return -1;
 
     int size = hash_table_size(gr->adjacency_map);
