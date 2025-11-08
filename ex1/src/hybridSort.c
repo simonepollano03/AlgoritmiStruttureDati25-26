@@ -52,7 +52,7 @@ void hybrid_sort(void *base, size_t nitems, size_t size, size_t k, int (*compar)
     }
 
     // Caso speciale -> uso solo selectionSort
-    if (k >= nitems) {
+    if (k > nitems) {
         selection_sort(base, nitems, size, compar);
         return;
     }
