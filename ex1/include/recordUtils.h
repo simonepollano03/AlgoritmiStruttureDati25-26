@@ -10,12 +10,14 @@
      * 
      * Layout: id(8) + field1(4) + field2(8) + field3(16)
      */
+    #pragma pack(push,1)
     typedef struct {
         uint64_t id;            /**< Intero senza segno a 64 bit */
         float field1;           /**< Float a 32 bit */
         int64_t field2;         /**< Intero con segno a 64 bit */
         char field3[16];        /**< Stringa (max 15 char + '\0') */
     } Record;
+    #pragma pack(pop)
 
     /**
      * @brief Legge un singolo record da file binario

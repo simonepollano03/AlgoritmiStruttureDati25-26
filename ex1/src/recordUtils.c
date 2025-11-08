@@ -34,7 +34,7 @@ int load_records_from_file(FILE *file, Record **records, size_t *count) {
 
     // Determino la dimensione del file
     fseek(file, 0, SEEK_END);
-    long file_size = ftell(file);
+    long long file_size = ftell(file);
     fseek(file, 0, SEEK_SET);
 
     if (file_size < 0 || file_size % sizeof(Record) != 0) {

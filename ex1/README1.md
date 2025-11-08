@@ -164,14 +164,14 @@ Nei test che sono stati effettuati è stato usato un dataset di **20.000.000 rec
 
 | **k** | **field1 (id)** | **field2 (float)** | **field3 (int64)** | **field4 (string)** |
 |:-----:|:---------------:|:-----------------:|:-----------------:|:-------------------:|
-| 0 | 7.25s | 4.78s | 7.83s | 6.82s |
-| 10 | 7.11s | 5.16s | 7.18s | 5.96s |
-| 50 | 7.00s | 4.92s | 7.09s | 6.13s |
-| 100 | 7.28s | 5.16s | 7.19s | 6.60s |
-| 500 | 11.57s | 7.60s | 10.99s | 12.11s |
-| 1.000 | 15.12s | 11.60s | 16.62s | 18.46s |
-| 5.000 | 61.32s | 52.09s | 71.09s | 91.09s |
-| 10.000 | 127.66s | 108.33s | 144.22s | 197.10s |
+| 0 | 14.36s | 15.60s | 13.80s | 7.70s |
+| 10 | 13.10s | 14.95s | 14.04s | 7.19s |
+| 50 | 12.54s | 15.32s | 13.86s | 7.52s |
+| 100 | 13.28s | 16.28s | 15.05s | 7.76s |
+| 500 | 21.86s | 32.32s | 24.61s | 7.14s |
+| 1.000 | 34.97s | 48.83s | 38.42s | 7.13s |
+| 5.000 | 132.90s | 196.80s | 151.94s | 5.95s |
+| 10.000 | 255.10s | 380.36s | 294.58s | 5.60s |
 | 1.000.000 | TIMEOUT | TIMEOUT | TIMEOUT | TIMEOUT |
 
 </div>
@@ -182,7 +182,13 @@ Con k=1.000.000, l'algoritmo ibrido (HybridSort) tenta di usare il SelectionSort
 
 ### Analisi della complessità
 SelectionSort: O(n²):  
-- Con (k) n=1.000.000 si effettuano circa 10¹² operazioni, quindi un trilione di operazioni quindi il tempo di esecuzione è **> 30 minuti**, potrebbe anche metterci ore.
+- Con (k) n=1.000.000 si effettuano circa 10¹² operazioni, quindi un trilione di operazioni quindi il tempo di esecuzione è **> 30 minuti**, potrebbe anche metterci ore.  
+
+### Osservazione sul campo field3 (stringhe): 
+L'ordinamento per field3 (stringhe) risulta significativamente **più veloce** rispetto ai campi numerici.  
+Analizzando i dati ordinati, emerge che il campo field3 contiene un **numero molto elevato di duplicati**. Ad esempio, la parola `"'Andate"` appare migliaia di volte consecutivamente nel dataset ordinato.
+
+Questa caratteristica dei dati spiega le prestazioni eccezionali.
 
 ### Conclusione: 
 Utilizzare k=1.000.000 è impraticabile per dataset di questa dimensione.  
