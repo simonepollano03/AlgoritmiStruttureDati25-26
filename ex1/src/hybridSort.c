@@ -45,12 +45,6 @@ static void hybrid_sort_recursive(char *arr, size_t low, size_t high,
 void hybrid_sort(void *base, size_t nitems, size_t size, size_t k, int (*compar)(const void *, const void *)) {
     if (base == NULL || nitems <= 1 || size == 0 || compar == NULL) return;
 
-    // Caso speciale -> uso solo quickSort
-    if (k == 0) {
-        quick_sort(base, nitems, size, compar);
-        return;
-    }
-
     // Caso speciale -> uso solo selectionSort
     if (k > nitems) {
         selection_sort(base, nitems, size, compar);
