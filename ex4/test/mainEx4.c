@@ -82,7 +82,7 @@ static void print_graph_stats(Graph gr) {
 }
 
 /**
- * @brief Normaliiza il nome della città 
+ * @brief Normalizza il nome della città 
  * (rimuove spazi extra, converte in lowercase)
  */
 static char* normalize_city_name(const char* city_name) {
@@ -92,7 +92,7 @@ static char* normalize_city_name(const char* city_name) {
     if (normalized == NULL) return NULL;
 
     int j = 0;
-    for (int i = 0; city_name[i] != '/0'; i++) {
+    for (int i = 0; city_name[i] != '\0'; i++) {
         
         // Salta spazi multipli
         if (city_name[i] == ' ' && (i == 0 || city_name[i-1] == ' ')) {
@@ -112,7 +112,7 @@ static char* normalize_city_name(const char* city_name) {
         j--;
     }
 
-    normalized[j] = '/0';
+    normalized[j] = '\0';
     return normalized;
 }
 
@@ -153,7 +153,7 @@ static void* find_node_case_insensitive(Graph gr, const char* city_name) {
  */
 static void suggest_similar_cities(Graph gr, const char* city_name) {
     void** nodes = graph_get_nodes(gr);
-    if (nodes == NULL) return NULL;
+    if (nodes == NULL) return;
 
     int num_nodes = graph_num_nodes(gr);
     printf("\n Città disponibili che iniziano con'%c': \n", city_name[0]);
@@ -199,7 +199,7 @@ int main(int argc, char* argv[]) {
     }
 
     // Carico i dati dal csv
-    printf("--> Caricamento dati da '%s'...\n");
+    printf("--> Caricamento dati da '%s'...\n", csv_file);
     int edges_loaded = load_graph_from_csv(csv_file, graph);
     if (edges_loaded < 0) {
         fprintf(stderr, "ERROR - Impossibile caricare il file CSV");
@@ -211,4 +211,56 @@ int main(int argc, char* argv[]) {
     // Stampa statistiche grafo
     print_graph_stats(graph);
 
+    printf("--> Ricerca della citta di partenza '%s'...\n", start_city);
+    void* start_node = find_node_case_insensitive(graph, start_city);
+    
+    if (start_node == NULL) {
+        fprintf(stderr, "\nERROR - La citta '%s' non e presente nel grafo\n", start_city);
+        suggest_similar_cities(graph, start_city);
+        graph_free(graph);
+        return EXIT_FAILURE;
+    }
+    
+    printf("   Citta trovata: %s\n", (char*)start_node);
+    
+    printf("\n--> Esecuzione BFV da '%s'...\n", (char*)start_node);
+    void** visited = breadth_first_visit(graph, start_node, string_compare, string_hash);
+    
+    if (visited == NULL) {
+        fprintf(stderr, "ERROR - Impossibile eseguire BFV\n");
+        graph_free(graph);
+        return EXIT_FAILURE;
+    }
+    
+    int visited_count = count_visited_nodes(visited);
+    printf("   Visitati %d nodi\n", visited_count);
+    
+    printf("\n--> Salvataggio risultati in '%s'...\n", output_file);
+    if (save_bfv_results(output_file, visited, visited_count) != 0) {
+        fprintf(stderr, "ERROR - Impossibile salvare i risultati\n");
+        free(visited);
+        graph_free(graph);
+        return EXIT_FAILURE;
+    }
+    
+    printf("   Risultati salvati con successo\n");
+    
+    printf("\nPrimi nodi visitati:\n");
+    int to_show = visited_count < 10 ? visited_count : 10;
+    for (int i = 0; i < to_show; i++) {
+        printf("  %2d. %s\n", i + 1, (char*)visited[i]);
+    }
+    
+    if (visited_count > 10) {
+        printf("  ...\n");
+        printf("  (altri %d nodi visitati)\n", visited_count - 10);
+    }
+    
+    printf("\n════════════════════════COMPLETATO════════════════════════════════\n");
+
+    
+    free(visited);
+    graph_free(graph);
+    
+    return EXIT_SUCCESS;
 }

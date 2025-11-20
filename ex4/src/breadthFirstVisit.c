@@ -22,6 +22,8 @@ static Queue* queue_create(void) {
     queue->front = NULL;
     queue->rear  = NULL;
     queue->size  = 0;
+
+    return queue;
 }
 
 static int queue_is_empty(const Queue* queue) {
@@ -53,7 +55,7 @@ static int queue_enqueue(Queue* queue, void* data) {
 
 
 // dequeue si intede che inserisce un elemento all'inizio alla coda
-static int queue_dequeue(Queue* queue) {
+static void* queue_dequeue(Queue* queue) {
     if (queue_is_empty(queue)) return NULL;
 
     QueueNode* temp = queue->front;

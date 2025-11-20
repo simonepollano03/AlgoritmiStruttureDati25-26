@@ -8,18 +8,8 @@
 static Graph graph;
 
 // Funzioni utility per test
-static int int_compare(const void* a, const void* b) {
-    int val_a = *(int*)a;
-    int val_b = *(int*)b;
-    return val_a - val_b; 
-}
-
 static int string_compare(const void* a, const void* b) {
     return strcmp((const char*)a, (const char*)b);
-}
-
-static unsigned long int_hash(const void* key) {
-    return (unsigned long)(*(int*)key);
 }
 
 static unsigned long string_hash(const void* key) {
@@ -93,7 +83,7 @@ static void test_graph_add_multiple_nodes(void) {
         TEST_ASSERT_EQUAL_INT(1, graph_add_node(graph, nodes[i]));
     }
 
-    TEST_ASSERT_EQUAL_INT(node_size, graph_num_node(graph));
+    TEST_ASSERT_EQUAL_INT(node_size, graph_num_nodes(graph));
 
     for (int i = 0; i < node_size; i++) {
         TEST_ASSERT_TRUE(graph_contains_node(graph, nodes[i]));

@@ -100,7 +100,7 @@ void print_csv_record(const CSVRecord* record) {
 int load_graph_from_csv(const char* file_name, Graph graph) {
     if (file_name == NULL || graph == NULL) return -1;
 
-    FILE* file = fopen(file_name, 'r');
+    FILE* file = fopen(file_name, "r");
     if (file == NULL) {
         fprintf(stderr, "ERROR - Impossibile aprire il file '%s'\n", file_name);
         return -1;

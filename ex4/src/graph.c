@@ -38,7 +38,7 @@ static AdjacencyList* adjacency_list_create(void) {
     return list;
 }
 
-static AdjacencyList* adjacency_list_find(AdjacencyList* list, const void* dest,
+static AdjacencyNode* adjacency_list_find(AdjacencyList* list, const void* dest,
                                           int (*compare)(const void*, const void*)) {
 
     if (list == NULL || dest == NULL) return NULL;
@@ -269,7 +269,7 @@ int graph_contains_edge(const Graph gr, const void* node1, const void* node2) {
     AdjacencyList* list_node1 = (AdjacencyList*)hash_table_get(gr->adjacency_map, node1);
     if (list_node1 == NULL) return 0;
 
-    return adjacency_list_find(list_node1, node2, gr->compare);
+    return adjacency_list_find(list_node1, node2, gr->compare) != NULL ? 1 : 0;
 }
 
 
@@ -396,7 +396,7 @@ void** graph_get_neighbours(const Graph gr, const void* node) {
 }
 
 int graph_num_neighbours(const Graph gr, const void* node) {
-    if (gr == NULL || node == NULL) return NULL;
+    if (gr == NULL || node == NULL) return -1;
 
     AdjacencyList* list = (AdjacencyList*)hash_table_get(gr->adjacency_map, node);
     if (list == NULL) return 0;
