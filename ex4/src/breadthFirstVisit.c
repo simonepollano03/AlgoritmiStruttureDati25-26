@@ -158,7 +158,7 @@ void** breadth_first_visit(Graph gr, void* start,
                 // Se non l'ho visitato, lo marco e lo aggiungo alla coda
                 if (!hash_table_contains_key(visited, neighbour)) {
                     int* marker = (int*)malloc(sizeof(int));
-                    if (marker == NULL) {
+                    if (marker != NULL) {
                         *marker = 1;
                         hash_table_put(visited, neighbour, marker);
                         queue_enqueue(queue, neighbour);

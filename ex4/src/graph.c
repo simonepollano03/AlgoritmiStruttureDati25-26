@@ -231,7 +231,7 @@ int graph_add_edge(Graph gr, const void* node1, const void* node2, const void* l
     if (gr == NULL || node1 == NULL || node2 == NULL ) return -1;
 
     // Verifico che entrambi i nodi (node1, node2) esistano
-    if (!(graph_contains_node(gr, node1) || graph_contains_node(gr, node2))) return -1;
+    if (!graph_contains_node(gr, node1) || !graph_contains_node(gr, node2)) return -1;
 
     // Se il grafo non è etichettato, la label deve essere settata a NULL
     if (!gr->labelled && label != NULL) return -1;
@@ -387,8 +387,8 @@ void** graph_get_neighbours(const Graph gr, const void* node) {
     AdjacencyNode* current = list->head;
     int index = 0;
 
-    while (current != 0) {
-        neighbours[index++] = current->next;
+    while (current != NULL) {
+        neighbours[index++] = current->dest;
         current = current->next;
     }
 

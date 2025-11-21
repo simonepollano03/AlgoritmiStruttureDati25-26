@@ -56,10 +56,10 @@ static void test_graph_create_undirected_unlabelled(void) {
 
 static void test_graph_create_null_params(void) {
     graph = graph_create(1, 1, NULL, string_hash);
-    TEST_ASSERT_NOT_NULL(graph);
+    TEST_ASSERT_NULL(graph);
 
     graph = graph_create(1, 1, string_compare, NULL);
-    TEST_ASSERT_NOT_NULL(graph);
+    TEST_ASSERT_NULL(graph);
 }
 
 static void test_graph_add_node(void) {
