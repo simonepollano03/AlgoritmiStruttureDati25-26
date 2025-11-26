@@ -1,5 +1,7 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
+    
+    #include <stdio.h>
 
     /**
      * @brief Struttura che rappresenta un task da schedulare
