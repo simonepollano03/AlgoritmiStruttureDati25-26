@@ -4,9 +4,8 @@
     #include "../include/scheduler.h"
     #include "../include/priorityQueue.h"
 
-#define MAX_LINE_LENGTH 256
-#define INITIAL_TASK_CAPACITY 100
-
+#define MAX_LINE_LENGTH 256         /** @brief Lunghezza massima consentita per una linea di input. */
+#define INITIAL_TASK_CAPACITY 100   /** @brief Capacità iniziale allocata per l’array dinamico di task. */
 /**
  * @brief Funzione di confronto per i task basata sulla priorità
  * 
@@ -167,7 +166,37 @@ int run_scheduler(const Task* tasks, int task_count, TaskResult* results) {
     // Continua fino a che non ci sono task da eseguire
     while (executed_count < task_count) {
 
-        //............
+        // Aggiungi alla PQ tutti i task arrivati (start <= current_time)
+        while (next_task_index < task_count &&
+               tasks[next_task_index].start <= current_time) {
+
+            priority_queue_push(pq, (void*)&tasks[next_task_index]);
+            next_task_index++;
+        }
+
+        // Se PQ vuota, avanza il tempo
+        if (priority_queue_is_empty(pq)) {
+            if (next_task_index < task_count) {
+                current_time = tasks[next_task_index].start;
+            }
+            
+            continue;
+        }
+
+        // Estrai il task con priorità massima
+        Task* selected_task = (Task*)priority_queue_top(pq);
+        priority_queue_pop(pq);
+
+        // Esegui il task
+        results[executed_count].id         = selected_task->id;
+        results[executed_count].start_time = current_time;
+        results[executed_count].end_time   = current_time + selected_task->length;
+
+        // Aggiorna il tempo corrente
+        current_time = results[executed_count].end_time;
+        executed_count++;
     }
 
+    priority_queue_free(pq);
+    return executed_count;
 }
