@@ -142,26 +142,103 @@ static void heapify_down(PriorityQueue* pq, size_t index) {
  * @brief Espande la capacità dell'array heap
  */
 static int resize_heap(PriorityQueue* pq) {
-
+    size_t new_capacity = pq->capacity * 2;
+    void** new_heap = (void**)realloc(pq->heap, new_capacity * sizeof(void*));
+    
+    if (new_heap == NULL) {
+        return -1;
+    }
+    
+    pq->heap = new_heap;
+    pq->capacity = new_capacity;
+    return 0;
 }
+
+/**
+ * @brief Funzione di confronto per la hash table (confronta puntatori)
+ */
+static int pointer_compare(const void* a, const void* b) {
+    return (a == b) ? 0 : 1;
+}
+
+/**
+ * @brief Funzione di hash wrapper che usa la funzione fornita dall'utente
+ */
+static unsigned long (*user_hash_func)(const void*) = NULL;
+
+static unsigned long pointer_hash(const void* ptr) {
+    if (user_hash_func != NULL) {
+        return user_hash_func(ptr);
+    }
+    /* Fallback: hash basato sull'indirizzo */
+    return (unsigned long)(size_t)ptr;
+}
+
 
 /*============= FUNZIONI PUBBLICHE =================*/
-PriorityQueue* priority_queue_create(int (*compare)(const void*, const void*), unsigned long (*hash)(const void*)) {
 
+PriorityQueue* priority_queue_create(int (*compare)(const void*, const void*), unsigned long (*hash)(const void*)) {
+    if (compare == NULL || hash == NULL) return NULL;
+
+    PriorityQueue* pq = (PriorityQueue*)malloc(sizeof(PriorityQueue));
+    if (pq == NULL) return NULL;
+
+    pq->heap = (void**)malloc(INITIAL_CAPACITY * sizeof(void*));
+    if (pq->heap == NULL) {
+        free(pq);
+        return NULL;
+    }
+
+    // Salva la funzione hash dell'utente per usarla nella hash table
+    user_hash_func = hash;
+    
+    pq->positions = hash_table_create(pointer_compare, hash);
+    if (pq->positions == NULL) {
+        free(pq->heap);
+        free(pq);
+        return NULL;
+    }
+
+    pq->size = 0;
+    pq->capacity = INITIAL_CAPACITY;
+    pq->compare = compare;
+    pq->hash = hash;
+
+    return pq;
 }
 
-
-
 int priority_queue_push(PriorityQueue* pq, void* element) {
+    if (pq == NULL || element == NULL) return -1;
 
+    // Espandi se necessario
+    if (pq->size >= pq->capacity) {
+        if (resize_heap(pq) != 0) return -1;
+    }
+    
+    // Insersci elemento in fondo
+    size_t index =pq->size;
+    pq->heap[index] = element;
+    pq->size++;
+
+    // Aggiorna la posizione nella hash table
+    update_position(pq, element, index);
+
+    // Bubble up per rispristinare proprietà della heap
+    bubble_up(pq, index);
+
+    return 0;
 }
 
 int priority_queue_contains(const PriorityQueue* pq, const void* element) {
+    if (pq == NULL || element == NULL) return 0;
 
+    return hash_table_contains_key(pq->positions, element);
 }
 
 void* priority_queue_top(const PriorityQueue* pq) {
+    if (pq == NULL || pq->size == 0) return;
 
+    return pq->heap[0];
 }
 
 void priority_queue_pop(PriorityQueue* pq) {
@@ -173,11 +250,15 @@ int priority_queue_remove(PriorityQueue* pq, const void* element) {
 }
 
 int priority_queue_size(const PriorityQueue* pq) {
+    if (pq == NULL) return 0;
 
+    return (int)pq->size;
 }
 
 int priority_queue_is_empty(const PriorityQueue* pq) {
+    if (pq == NULL) return -1;
 
+    return pq->size == 0 ? 1 : 0;
 }
 
 void priority_queue_free(PriorityQueue* pq) {
