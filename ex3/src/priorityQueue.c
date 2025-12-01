@@ -215,7 +215,7 @@ int priority_queue_push(PriorityQueue* pq, void* element) {
         if (resize_heap(pq) != 0) return -1;
     }
     
-    // Insersci elemento in fondo
+    // Inserisci elemento in fondo
     size_t index =pq->size;
     pq->heap[index] = element;
     pq->size++;
@@ -242,11 +242,66 @@ void* priority_queue_top(const PriorityQueue* pq) {
 }
 
 void priority_queue_pop(PriorityQueue* pq) {
+    if (pq == NULL || pq->size == 0) return;
 
+    // Rimuovi radice dalla hash table
+    size_t old_pos = (size_t)hash_table_get(pq->positions, pq->heap[0]);
+    hash_table_remove(pq->positions, pq->heap[0]);
+    if (old_pos != NULL) {
+        free(old_pos);
+    }
+
+    // CASO SPECIALE: un solo elemento
+    if (pq->size == 1) {
+        pq->size = 0;
+        return;
+    }
+
+    // Sposta l'ultimo elemento in cima
+    pq->heap[0] = pq->heap[pq->size - 1];
+    pq->size--;
+
+    // Aggiorna posizione del nuovo elemento radice
+    update_position(pq, pq->heap[0], 0);
+
+    // Heapify-down per ripristinare proprietà heap
+    heapify_down(pq, 0);    
 }
 
 int priority_queue_remove(PriorityQueue* pq, const void* element) {
+    if (pq == NULL || element == NULL || pq->size == 0) return -1;
 
+    // Trova la posizione dell'elemento usando hash table (O(1))
+    size_t* pos_ptr = (size_t*)hash_table_get(pq->positions, element);
+    if (pos_ptr == NULL) return -1;
+
+    size_t index = *pos_ptr;
+
+    // Rimuovi dalla hash table l'elemento
+    hash_table_remove(pq->positions, element);
+    free(pos_ptr);
+
+    // CASO SPECIALE: è l'ultimo elemento
+    if (index == pq->size - 1) {
+        pq->size--;
+        return 0;
+    }
+
+    // Sostituisci con l'ultimo elemento
+    pq->heap[index] = pq->heap[pq->size - 1];
+    pq->size--;
+
+    // Aggiorna posizione
+    update_position(pq, pq->heap[index], index);
+
+    // Ripristina proprietà heap (potrebbe dover scendere o salire)
+    if (index > 0 && pq->compare(pq->heap[index], pq->heap[parent_index(index)]) > 0) {
+        bubble_up(pq, index);
+    } else {
+        heapify_down(pq, index);
+    }
+
+    return 0;
 }
 
 int priority_queue_size(const PriorityQueue* pq) {
@@ -262,6 +317,31 @@ int priority_queue_is_empty(const PriorityQueue* pq) {
 }
 
 void priority_queue_free(PriorityQueue* pq) {
+    if (pq == NULL) return;
 
+    // Libera tutte le posizioni allocate nella hash table
+    if (pq->positions != NULL) {
+        void** keys = hash_table_keyset(pq->positions);
+        if (keys != NULL) {
+            int size = hash_table_size(pq->positions);
+
+            for (int i = 0; i < size; i++) {
+                size_t* pos = (size_t*)hash_table_get(pq->positions, keys[i]);
+                if (pos != NULL) {
+                    free(pos);
+                }
+            }
+
+            free(keys);
+        }
+
+        hash_table_free(pq->positions);
+    }
+
+    if (pq->heap != NULL) {
+        free(pq->heap);
+    }
+
+    free(pq);
 }
 
