@@ -161,20 +161,6 @@ static int pointer_compare(const void* a, const void* b) {
     return (a == b) ? 0 : 1;
 }
 
-/**
- * @brief Funzione di hash wrapper che usa la funzione fornita dall'utente
- */
-static unsigned long (*user_hash_func)(const void*) = NULL;
-
-static unsigned long pointer_hash(const void* ptr) {
-    if (user_hash_func != NULL) {
-        return user_hash_func(ptr);
-    }
-    /* Fallback: hash basato sull'indirizzo */
-    return (unsigned long)(size_t)ptr;
-}
-
-
 /*============= FUNZIONI PUBBLICHE =================*/
 
 PriorityQueue* priority_queue_create(int (*compare)(const void*, const void*), unsigned long (*hash)(const void*)) {
@@ -188,9 +174,6 @@ PriorityQueue* priority_queue_create(int (*compare)(const void*, const void*), u
         free(pq);
         return NULL;
     }
-
-    // Salva la funzione hash dell'utente per usarla nella hash table
-    user_hash_func = hash;
     
     pq->positions = hash_table_create(pointer_compare, hash);
     if (pq->positions == NULL) {
@@ -236,7 +219,7 @@ int priority_queue_contains(const PriorityQueue* pq, const void* element) {
 }
 
 void* priority_queue_top(const PriorityQueue* pq) {
-    if (pq == NULL || pq->size == 0) return;
+    if (pq == NULL || pq->size == 0) return NULL;
 
     return pq->heap[0];
 }
@@ -245,7 +228,7 @@ void priority_queue_pop(PriorityQueue* pq) {
     if (pq == NULL || pq->size == 0) return;
 
     // Rimuovi radice dalla hash table
-    size_t old_pos = (size_t)hash_table_get(pq->positions, pq->heap[0]);
+    size_t* old_pos = (size_t*)hash_table_get(pq->positions, pq->heap[0]);
     hash_table_remove(pq->positions, pq->heap[0]);
     if (old_pos != NULL) {
         free(old_pos);

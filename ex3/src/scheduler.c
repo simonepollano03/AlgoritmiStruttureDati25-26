@@ -6,13 +6,14 @@
 
 #define MAX_LINE_LENGTH 256         /** @brief Lunghezza massima consentita per una linea di input. */
 #define INITIAL_TASK_CAPACITY 100   /** @brief Capacità iniziale allocata per l’array dinamico di task. */
+
 /**
  * @brief Funzione di confronto per i task basata sulla priorità
  * 
  * Task con priorità maggiore hanno precedenza.
  * In caso di parità di priorità, si potrebbe usare l'ID come tie-breaker.
  */
-static int task_compare_priority(const void* a, const void* b) {
+int task_compare_priority(const void* a, const void* b) {
     const Task* task_a = (const Task*)a;
     const Task* task_b = (const Task*)b;
 
@@ -22,7 +23,7 @@ static int task_compare_priority(const void* a, const void* b) {
 /**
  * @brief Funzione di hash per i task (basata sull'ID)
  */
-static unsigned long task_hash(const void* element) {
+unsigned long task_hash(const void* element) {
     const Task* task = (const Task*)element;
     
     return (unsigned long)task->id;
@@ -31,7 +32,7 @@ static unsigned long task_hash(const void* element) {
 /**
  * @brief Funzione di confronto per uguaglianza tra task (basata su ID)
  */
-static int task_compare_equal(const void* a, const void* b) {
+int task_compare_equal(const void* a, const void* b) {
     const Task* task_a = (const Task*)a;
     const Task* task_b = (const Task*)b;
 
@@ -41,7 +42,7 @@ static int task_compare_equal(const void* a, const void* b) {
 /**
  * @brief Stampa un task su stdout (per debug)
  */
-static void print_task(const Task* task) {
+void print_task(const Task* task) {
     if (task == NULL) {
         fprintf(stderr, "ERROR - Task: NULL\n");
         return;
@@ -53,7 +54,7 @@ static void print_task(const Task* task) {
 /**
  * @brief Stampa un risultato su stdout (per debug)
  */
-static void print_result(const TaskResult* result) {
+void print_result(const TaskResult* result) {
     if (result == NULL) {
         fprintf(stderr, "ERROR - Result: NULL\n");
         return;
@@ -145,19 +146,32 @@ int save_results_to_csv(const char* file_name, const TaskResult* results, int co
         fprintf(file, "%d,%d,%d\n",
                 results[i].id,
                 results[i].start_time,
-                results->end_time);
+                results[i].end_time);
     }
 
     fclose(file);
     return 0;
 }
 
-int run_scheduler(const Task* tasks, int task_count, TaskResult* results) {
-    if (tasks == NULL || task_count <= 0 || results == NULL) return -1;
+int run_scheduler(const Task* tasks, int task_count, TaskResult** results, int* result_count) {
+    if (tasks == NULL || task_count <= 0 || results == NULL || result_count == NULL) return -1;
+
+    // Creo una copia dei task per ordinarli
+    Task* sorted_tasks = (Task*)malloc((size_t)task_count * sizeof(Task));
+    if (sorted_tasks == NULL) return -1;
+
+    // Alloca array risultati
+    *results = (TaskResult*)malloc((size_t)task_count * sizeof(TaskResult));
+    if (*results == NULL) return -1;
+    *result_count = 0;
 
     // Crea la priority queue
     PriorityQueue* pq = priority_queue_create(task_compare_priority, task_hash);
-    if (pq == NULL) return -1;
+    if (pq == NULL) {
+        free(*results);
+        *results = NULL;
+        return -1;
+    }
 
     int current_time = 0;           /* Tempo corrente della simulazione */
     int next_task_index = 0;        /* Prossimo task da considerare (ordinati per start) */
@@ -188,15 +202,16 @@ int run_scheduler(const Task* tasks, int task_count, TaskResult* results) {
         priority_queue_pop(pq);
 
         // Esegui il task
-        results[executed_count].id         = selected_task->id;
-        results[executed_count].start_time = current_time;
-        results[executed_count].end_time   = current_time + selected_task->length;
+        (*results)[executed_count].id         = selected_task->id;
+        (*results)[executed_count].start_time = current_time;
+        (*results)[executed_count].end_time   = current_time + selected_task->length;
 
         // Aggiorna il tempo corrente
-        current_time = results[executed_count].end_time;
+        current_time = (*results)[executed_count].end_time;
         executed_count++;
     }
 
+    *result_count = executed_count;
     priority_queue_free(pq);
-    return executed_count;
+    return 0;
 }

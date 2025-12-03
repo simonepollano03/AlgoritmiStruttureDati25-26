@@ -81,6 +81,15 @@
     unsigned long task_hash(const void* task);
 
     /**
+     * @brief Funzione di confronto per uguaglianza tra task (basata su ID)
+     * 
+     * @param a Primo task
+     * @param b Secondo task
+     * @return int 0 se uguali, diverso da 0 altrimenti
+     */
+    int task_compare_equal(const void* a, const void* b);
+
+    /**
      * @brief Libera la memoria allocata per un array di task
      * 
      * @param tasks Array di task da liberare
@@ -93,5 +102,15 @@
      * @param results Array di risultati da liberare
      */
     void free_results(TaskResult* results);
+
+    /**
+     * @brief Stampa task su stdout (per debug)
+     */
+    void print_task(const Task* task);
+
+    /**
+     * @brief Stampa risultato su stdout (per debug)
+     */
+    void print_result(const TaskResult* result);
     
 #endif

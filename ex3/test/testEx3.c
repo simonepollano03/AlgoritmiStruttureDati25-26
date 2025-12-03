@@ -151,11 +151,11 @@ static void test_pq_remove(void) {
 
     int result = priority_queue_remove(pq, &values[0]);
     TEST_ASSERT_EQUAL_INT(0, result);
-    TEST_ASSERT_EQUAL_INT(n, priority_queue_size(pq));
+    TEST_ASSERT_EQUAL_INT(n - 1, priority_queue_size(pq));
     TEST_ASSERT_FALSE(priority_queue_contains(pq, &values[0]));
 
     int* top = (int*)priority_queue_top(pq);
-    TEST_ASSERT_EQUAL_IT(10, *top);
+    TEST_ASSERT_EQUAL_INT(10, *top);
 }
 
 static void test_pq_remove_not_found(void) {
@@ -209,7 +209,7 @@ static void test_pq_ternary_structure(void) {
         int* top = (int*)priority_queue_top(pq);
         TEST_ASSERT_TRUE(*top < prev);
         prev = *top;
-        priority_queue_top(pq);
+        priority_queue_pop(pq);
     }
 }  
 
@@ -240,7 +240,7 @@ static void test_task_functions(void) {
 
     TEST_ASSERT_TRUE(task_hash(&t1) != task_hash(&t2));
 
-    TEST_ASSERT_EQUAL_INT(0, task_compare_equal(&t1, &t2));
+    TEST_ASSERT_EQUAL_INT(0, task_compare_equal(&t1, &t1));
     TEST_ASSERT_TRUE(task_compare_equal(&t1, &t2) != 0);
 }
 

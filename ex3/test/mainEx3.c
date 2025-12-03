@@ -55,14 +55,6 @@ int main (int argc, char* argv[]) {
     printf("\n");
     // END DEBUG
 
-    // Alloca array per i risultati
-    TaskResult* results = (TaskResult*)malloc(task_count * sizeof(TaskResult));
-    if (results == NULL) {
-        fprintf(stderr, "ERROR - Impossibile allocare memoria per i risultati\n");
-        free(tasks);
-        return EXIT_FAILURE;
-    }
-
     // Eseguo scheduling
     printf("Esecuzione scheduling...\n");
 
@@ -88,7 +80,7 @@ int main (int argc, char* argv[]) {
     printf("Primi risultati (max 5):\n");
     for (int i = 0; i < executed && i < 5; i++) {
         printf("  ");
-        print_task(&results[i]);
+        print_result(&results[i]);
     }
     if (executed > 5) {
         printf("   ... e altri %d risultati\n", executed - 5);
