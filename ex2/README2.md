@@ -193,56 +193,8 @@ Un altro aspetto fondamentale è la capacità di scrivere prompt chiari e mirati
 
 Senza dubbio, gli LLM stanno già cambiando il modo di programmare, ma il loro impiego efficace dipende dalla capacità dell’utente di saperli guidare, interpretare e controllare.
 
-
 ---
-
-## Compilazione ed Esecuzione
-
-### Compilazione
-
-Il progetto utilizza un Makefile per automatizzare la compilazione. I comandi disponibili sono:
-```bash
-# Compila tutti gli eseguibili (mainEx2 e testEx2)
-make all
-
-# Pulisce i file compilati
-make clean
-
-# Compila ed esegue i test automatici
-make test
-
-# Stampa la sintassi di utilizzo dell'esercizio 
-make howto
-```
-
-### Esecuzione
-
-#### 1. Test automatici
-
-Per verificare la correttezza dell'implementazione:
-```bash
-$ make test
-# oppure
-$ ./bin/testEx2
-```
-
-#### 2. Trova parola più frequente
-
-**Sintassi:**
-```bash
-./bin/mainEx2 <percorso_file> <lunghezza_minima>
-```
-
-**Esempi di utilizzo:**
-```bash
-# Parola più frequente con lunghezza >= 3
-$ ./bin/mainEx2 data/iliade.txt 3
-# Parola più frequente con lunghezza >= 10
-$ ./bin/mainEx2 data/iliade.txt 10
-```
 
 ## 👥 Autori
 
-[Simone Pollano] – 1068650 – simone.pollano593@edu.unito.it
-
-
+[Simone Pollano] – 1068650 – <simone.pollano593@edu.unito.it>

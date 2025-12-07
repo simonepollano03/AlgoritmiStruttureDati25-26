@@ -155,21 +155,19 @@ Primi nodi visitati:
   ...
   (altri 18626 nodi visitati)
 ```
-Quello che si può evincere è che la BFV visita le città in ordine di "distanza topologica" da `start_city`:
+
+**Note**:
+- La ricerca della città è *case-insensitive*
+- Se la città non esiste vengono mostrati suggerimenti con una struttura simile
+
+Dal risultato si evince che la BFV visita le città in ordine di "distanza topologica" da `start_city`:
 - **Liv 0**: torino (`start_city`)
 - **Liv 1**: revigliasco, lingotto, ...
 - **Liv 2**: Città collegata ai vicini di torino
 - ...
 - **Liv N**: Località più remote (es: lipari, lampedusa, catanzaro (Sicilia / Calabria))
 
-
----
-
-## Note:
-- La ricerca della città è *case-insensitive*
-- Se la città non esiste vengono mostrati suggerimenti con una struttura simile
-
 ---
 ## 👥 Autori
 
-[Simone Pollano] – 1068650 – simone.pollano593@edu.unito.it
+[Simone Pollano] – 1068650 – <simone.pollano593@edu.unito.it>

@@ -12,7 +12,7 @@
 ├── `docs/`              # Documentazione generata (HTML)  
 ├── `Makefile`           # Build automation  
 ├── `Doxyfile`           # Configurazione Doxygen  
-└── `README4.md`         # Questo file
+└── `README3.md`         # Questo file
 
 ---
 
@@ -158,7 +158,7 @@ La **HashTable di appoggio**, derivante dall'esercizio 2, permette di implementa
 | `size`         | O(1)            | Valore memorizzato  |
 | `is_empty`     | O(1)            | Controllo size == 0 |
 
-*\* Complessità ammortizzata, assumendo hash table efficiente*
+*(\*) Lookup nella hash table (complessità ammortizzata)*
 </div>  
 
 ### Algoritmo dello scheduler

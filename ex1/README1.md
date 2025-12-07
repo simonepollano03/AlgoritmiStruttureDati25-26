@@ -232,57 +232,6 @@ L'ipotesi iniziale (SelectionSort più efficiente su array piccoli per minor ove
 
 ---
 
-## Compilazione ed Esecuzione
-
-### Compilazione
-
-Il progetto utilizza un Makefile per automatizzare la compilazione. I comandi disponibili sono:
-```bash
-# Compila tutti gli eseguibili (mainEx1 e testEx1)
-make all
-
-# Pulisce i file compilati
-make clean
-
-# Compila ed esegue i test automatici
-make test
-
-# Stampa la sintassi di utilizzo dell'esercizio 
-make howto
-```
-
-### Esecuzione
-
-#### 1. Test automatici
-
-Per verificare la correttezza dell'implementazione:
-```bash
-$ make test
-# oppure
-$ ./bin/testEx1
-```
-
-#### 2. Ordinamento dei record
-
-**Sintassi:**
-```bash
-./bin/mainEx1 <input_file> <output_file> <field> <k>
-```
-
-**Esempi di utilizzo:**
-```bash
-# Ordina per campo id con k=50 (ottimale)
-$ ./bin/mainEx1 data/records.bin data/sorted_id_k50.bin 1 50
-
-# Ordina per campo field1 usando solo QuickSort
-$ ./bin/mainEx1 data/records.bin data/sorted_field1.bin 2 0
-
-# Ordina per campo field3 (stringhe) con k=100
-$ ./bin/mainEx1 data/records.bin data/sorted_field3.bin 4 100
-```
-
----
-
 ## 👥 Autori
 
-[Simone Pollano] – 1068650 – simone.pollano593@edu.unito.it
+[Simone Pollano] – 1068650 – <simone.pollano593@edu.unito.it>
