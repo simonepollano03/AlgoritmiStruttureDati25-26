@@ -54,7 +54,7 @@ static int queue_enqueue(Queue* queue, void* data) {
 }
 
 
-// dequeue si intede che inserisce un elemento all'inizio alla coda
+// dequeue si intede che rimuove un elemento all'inizio alla coda
 static void* queue_dequeue(Queue* queue) {
     if (queue_is_empty(queue)) return NULL;
 

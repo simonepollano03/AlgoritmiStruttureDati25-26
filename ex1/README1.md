@@ -60,7 +60,7 @@ int save_records_to_file(FILE *file, const Record *records, size_t count);
 int (*get_comparator(size_t field))(const void*, const void*);
 ```
 
-- **Lettura ottimizzata**: un'unica `fread()` per tutti i record (18M record in ~1 secondo)
+- **Lettura ottimizzata**: un'unica `fread()` per tutti i record (20M record in ~1 secondo)
 - **Comparatori dedicati**: funzioni separate per ogni campo (id, field1, field2, field3)
 - **Selezione dinamica**: `get_comparator()` restituisce il comparatore corretto in base al campo
 
@@ -68,7 +68,7 @@ int (*get_comparator(size_t field))(const void*, const void*);
 
 ## Problematiche riscontrate
 
-**Situazione iniziale:** L'ordinamento del dataset (18M record) si bloccava indefinitamente, rendendo impossibile completare l'esecuzione.
+**Situazione iniziale:** L'ordinamento del dataset (20M record) si bloccava indefinitamente, rendendo impossibile completare l'esecuzione.
 
 **Analisi del problema:** 
 
@@ -149,7 +149,7 @@ void quick_sort_recursive(char *arr, size_t low, size_t high, size_t size,
 
 **Risultato:**
 - ❌ **Prima** (partizione a due vie): blocco totale, impossibile completare
-- ✅ **Dopo** (partizione a tre vie): 5-7 secondi su 18M record, complessità O(n log n) garantita
+- ✅ **Dopo** (partizione a tre vie): 7-16 secondi su 20M record, complessità O(n log n) garantita
 
 --- 
 
@@ -184,15 +184,15 @@ Con k=1.000.000, l'algoritmo ibrido (HybridSort) tenta di usare il SelectionSort
 SelectionSort: O(n²):  
 - Con (k) n=1.000.000 si effettuano circa 10¹² operazioni, quindi un trilione di operazioni quindi il tempo di esecuzione è **> 30 minuti**, potrebbe anche metterci ore.  
 
-### Osservazione sul campo field3 (stringhe): 
-L'ordinamento per field3 (stringhe) risulta significativamente **più veloce** rispetto ai campi numerici.  
+### Osservazione sul campo field4 (stringhe): 
+L'ordinamento per field4 (stringhe) risulta significativamente **più veloce** rispetto ai campi numerici.  
 Analizzando i dati ordinati, emerge che il campo field3 contiene un **numero molto elevato di duplicati**. Ad esempio, la parola `"'Andate"` appare migliaia di volte consecutivamente nel dataset ordinato.
 
 Questa caratteristica dei dati spiega le prestazioni eccezionali.
 
 ### Conclusione: 
 Utilizzare k=1.000.000 è impraticabile per dataset di questa dimensione.  
-Il SelectionSort è più efficiente in situazioni in cui il valore di k, quindi la dimensione del sottoarray, è inferiore di 10000.
+Il SelectionSort è più efficiente in situazioni in cui il valore di k, quindi la dimensione del sottoarray, è inferiore a 10.000.
 
 ####  Valore ottimale di k
 Analizzando i tempi di esecuzione si può osservare che il valore di k ottimale è: 
@@ -201,34 +201,34 @@ Analizzando i tempi di esecuzione si può osservare che il valore di k ottimale 
 ***50 <= k <= 100***.  
 </div>
 
-- Per k ∈ [10, 100]: tempi migliori (~5-7 secondi)
-- k=50 risulta essere il valore più stabile su tutti i campi
+- Per k ∈ [50, 100]: tempi migliori (~7-16 secondi)
+- k = 50 risulta essere il valore più stabile su tutti i campi
 - Per k < 50: overhead di QuickSort su array piccoli
 - Per k > 100: SelectionSort O(n²) inizia a dominare  
 
 
 #### Differenze tra i campi
 
-- **field2 (float)**: più veloce in assoluto (*k=0, t=4.78 s*)
-    - Vengono effettuati confronti numerici più rapidi  
-- **field4 (string)**: più lento (*k=0, t=6.82 s*, *k=10.000, t=197 s*)
-    - La funzione `strcmp()` è più costosa per confronti nuemrici
+- **field4 (string)**: più veloce in assoluto (*k=0, t=7.70s*)
+    - Beneficia dei numerosi duplicati nel dataset  
+- **field2 (float)**: più lento (*k=0, t=15.60s*, *k=10.000, t=380.36s*)
+    - I confronti in virgola mobile hanno overhead maggiore
     - Degrada più rapidamente all'aumentare di k  
 - **field1 (id)** e **field3 (int64)**: hanno performance simili
     - Confronti tra interi a 64 bit
 
 #### Confronto QuickSort puro vs HybridSort
 
-- **k=0 (solo QuickSort)**: 4.78-7.83 secondi
-- **k=50 (HybridSort ottimale)**: 4.92-7.09 secondi
+- **k=0 (solo QuickSort)**: 7.70-15.60 secondi
+- **k=50 (HybridSort ottimale)**: 7.52-15.32 secondi
 
-**Risultato:** L'approccio ibrido offre vantaggi **minimi** o **nulli** rispetto al QuickSort puro.
+**Risultato:** L'approccio ibrido offre vantaggi **variabili** rispetto al QuickSort puro: miglioramenti significativi per field1, ma minimi o nulli per gli altri campi.  
 
-L'ipotesi iniziale (SelectionSort più efficiente su array piccoli per minor overhead) si rivela **parzialmente falsa** con i dati reali:
+L'ipotesi iniziale (SelectionSort più efficiente su array piccoli per minor overhead) si rivela **parzialmente vera** con i dati reali:
 
 1. Il QuickSort con partizione a tre vie è già molto efficiente
 2. Il costo O(n²) di SelectionSort supera rapidamente i benefici del minor overhead
-3. Solo per k molto piccoli (≤ 100) si osservano miglioramenti trascurabili
+3. Solo per k molto piccoli (≤ 100) si osservano miglioramenti, significativi per alcuni campi (field1) e trascurabili per altri
 
 ---
 

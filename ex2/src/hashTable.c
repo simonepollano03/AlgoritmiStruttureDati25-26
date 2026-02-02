@@ -129,6 +129,7 @@ void hash_table_put(HashTable *table, const void *key, const void *value) {
     if ((float)table->size / table->capacity > LOAD_FACTOR) {
         resize(table);
     }
+    
     // Calcolo valore hash della key
     unsigned long hash_value = table->hash(key);
     size_t index = hash_value % table->capacity;

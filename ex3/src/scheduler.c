@@ -156,9 +156,11 @@ int save_results_to_csv(const char* file_name, const TaskResult* results, int co
 int run_scheduler(const Task* tasks, int task_count, TaskResult** results, int* result_count) {
     if (tasks == NULL || task_count <= 0 || results == NULL || result_count == NULL) return -1;
 
+    /////
     // Creo una copia dei task per ordinarli
     Task* sorted_tasks = (Task*)malloc((size_t)task_count * sizeof(Task));
-    if (sorted_tasks == NULL) return -1;
+    if (sorted_tasks == NULL) return -1; 
+    ///// NON SERVE
 
     // Alloca array risultati
     *results = (TaskResult*)malloc((size_t)task_count * sizeof(TaskResult));
